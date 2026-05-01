@@ -1,0 +1,46 @@
+id: deploy-to-kubernetes
+version: 1.0.0
+description: >
+  Orquesta la promocion de un servicio a Kubernetes con controles de manifiestos,
+  configuracion y verificacion post-despliegue.
+inputs:
+  - name: service_name
+    required: true
+    description: Servicio a desplegar.
+  - name: image_reference
+    required: true
+    description: Imagen versionada y aprobada.
+  - name: cluster_environment
+    required: true
+    description: Entorno destino, por ejemplo dev, staging o prod.
+outputs:
+  - deployment_plan
+  - manifest_review
+  - rollout_report
+  - rollback_notes
+guards:
+  - La imagen esta versionada de forma inmutable.
+  - Los manifiestos no incluyen secretos en claro.
+  - Existe estrategia de rollback documentada.
+steps:
+  - id: plan-rollout
+    role: platform-agent
+    action: Definir entorno, namespace, recursos y estrategia de rollout.
+    produces:
+      - deployment_plan
+  - id: review-manifests
+    role: security-agent
+    action: Revisar recursos, limites, secretos y politicas.
+    produces:
+      - manifest_review
+  - id: apply-deployment
+    role: execution-agent
+    action: Ejecutar despliegue mediante la plataforma autorizada.
+    produces:
+      - rollout_event
+  - id: verify-rollout
+    role: qa-agent
+    action: Comprobar estado, health checks, logs y plan de rollback.
+    produces:
+      - rollout_report
+      - rollback_notes

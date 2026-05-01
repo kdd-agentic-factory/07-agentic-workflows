@@ -1,0 +1,41 @@
+id: create-new-skill
+version: 1.0.0
+description: >
+  Orquesta la creacion de una skill reutilizable con instrucciones, alcance,
+  ejemplos y validaciones minimas.
+inputs:
+  - name: skill_name
+    required: true
+    description: Nombre unico de la skill.
+  - name: capability
+    required: true
+    description: Capacidad especializada que aporta.
+  - name: trigger_conditions
+    required: true
+    description: Situaciones en las que debe usarse.
+outputs:
+  - skill_contract
+  - skill_files
+  - examples
+  - validation_report
+guards:
+  - La skill tiene disparadores claros.
+  - La skill no duplica capacidades existentes.
+  - Las instrucciones distinguen proceso, herramientas y limites.
+steps:
+  - id: define-scope
+    role: skill-designer
+    action: Delimitar capacidad, entradas, salidas y casos de no uso.
+    produces:
+      - skill_contract
+  - id: author-instructions
+    role: documentation-agent
+    action: Redactar instrucciones operativas y ejemplos.
+    produces:
+      - skill_files
+      - examples
+  - id: check-integration
+    role: qa-agent
+    action: Validar formato, disparadores y ausencia de acoplamientos indebidos.
+    produces:
+      - validation_report

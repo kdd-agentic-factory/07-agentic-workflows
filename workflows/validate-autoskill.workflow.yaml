@@ -1,0 +1,41 @@
+id: validate-autoskill
+version: 1.0.0
+description: >
+  Valida que una autoskill propuesta sea segura, reusable y suficientemente
+  especifica antes de incorporarla al catalogo.
+inputs:
+  - name: skill_path
+    required: true
+    description: Ruta a la skill candidata.
+  - name: expected_capability
+    required: true
+    description: Capacidad que debe cubrir.
+outputs:
+  - validation_report
+  - risk_assessment
+  - approval_decision
+guards:
+  - La skill no solicita secretos innecesarios.
+  - Los ejemplos no dependen de datos privados.
+  - Las herramientas requeridas estan justificadas.
+steps:
+  - id: inspect-contract
+    role: qa-agent
+    action: Revisar nombre, descripcion, disparadores y limites.
+    produces:
+      - contract_findings
+  - id: evaluate-safety
+    role: safety-agent
+    action: Identificar riesgos de permisos, privacidad y acciones destructivas.
+    produces:
+      - risk_assessment
+  - id: run-sample-task
+    role: evaluation-agent
+    action: Ejecutar mentalmente o con fixtures un caso representativo.
+    produces:
+      - behavior_notes
+  - id: decide
+    role: maintainer-agent
+    action: Aprobar, pedir cambios o rechazar la skill.
+    produces:
+      - approval_decision

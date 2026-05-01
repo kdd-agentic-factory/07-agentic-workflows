@@ -1,0 +1,39 @@
+id: deploy-to-docker
+version: 1.0.0
+description: >
+  Define el proceso para empaquetar y validar una aplicacion mediante Docker sin
+  fijar detalles propios de un proyecto concreto.
+inputs:
+  - name: service_name
+    required: true
+    description: Servicio o aplicacion a empaquetar.
+  - name: build_context
+    required: true
+    description: Ruta o repositorio usado como contexto de build.
+  - name: runtime_contract
+    required: true
+    description: Puertos, variables y dependencias de runtime esperadas.
+outputs:
+  - docker_build_plan
+  - image_manifest
+  - smoke_test_report
+guards:
+  - La imagen no contiene secretos.
+  - Las variables de entorno requeridas estan documentadas.
+  - Existe una comprobacion minima de arranque.
+steps:
+  - id: inspect-runtime
+    role: devops-agent
+    action: Revisar puertos, dependencias, variables y health checks.
+    produces:
+      - docker_build_plan
+  - id: build-image
+    role: execution-agent
+    action: Construir la imagen usando el repositorio de codigo indicado.
+    produces:
+      - image_manifest
+  - id: smoke-test
+    role: qa-agent
+    action: Ejecutar prueba minima de arranque y conectividad.
+    produces:
+      - smoke_test_report
