@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir -p '/mnt/c/Users/rjuarcad/OneDrive - Universidad Alfonso X el Sabio/Escritorio/kdd-agentic-factory/07-agentic-workflows/workflows/governance')",
+      "Bash(mkdir -p '/mnt/c/Users/rjuarcad/OneDrive - Universidad Alfonso X el Sabio/Escritorio/kdd-agentic-factory/07-agentic-workflows/workflows/software-engineering')",
+      "Bash(mkdir -p '/mnt/c/Users/rjuarcad/OneDrive - Universidad Alfonso X el Sabio/Escritorio/kdd-agentic-factory/07-agentic-workflows/workflows/skills')",
+      "Bash(mkdir -p '/mnt/c/Users/rjuarcad/OneDrive - Universidad Alfonso X el Sabio/Escritorio/kdd-agentic-factory/07-agentic-workflows/workflows/knowledge')",
+      "Bash(mkdir -p '/mnt/c/Users/rjuarcad/OneDrive - Universidad Alfonso X el Sabio/Escritorio/kdd-agentic-factory/07-agentic-workflows/workflows/data')"
+    ],
+    "additionalDirectories": [
+      "\\mnt\\c\\Users\\rjuarcad\\OneDrive - Universidad Alfonso X el Sabio\\Escritorio\\kdd-agentic-factory\\07-agentic-workflows"
+    ]
+  }
+}
