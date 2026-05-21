@@ -1,0 +1,45 @@
+﻿id: export-deployment-evidence
+name: Export Deployment Evidence
+version: 0.1.0
+status: proposed
+kdd_stage: deployment
+description: Exports a deployment evidence packet including approval record, manifest, health report and as-built.
+target_repositories:
+  - 11-infra-kubernetes
+inputs:
+  - name: deployment_run_id
+    type: string
+    required: true
+  - name: output_path
+    type: string
+    required: true
+outputs:
+  - name: evidence_packet_path
+    type: string
+agents:
+  - documentation_agent
+  - kdd_admin_agent
+required_skills:
+  - generate_evidence_packet
+required_tools:
+  - filesystem.read
+  - filesystem.write
+approval:
+  required: false
+  reason: Evidence export is read-only.
+steps:
+  - id: load_deployment_data
+    type: tool
+    tool: filesystem.read
+  - id: generate_packet
+    type: skill
+    skill: generate_evidence_packet
+  - id: export_packet
+    type: tool
+    tool: filesystem.write
+evidence:
+  required: true
+  outputs:
+    - evidence_packet_path
+metrics:
+  - deployment_evidence_export_duration_seconds

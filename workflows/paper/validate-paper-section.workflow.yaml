@@ -1,0 +1,49 @@
+﻿id: validate-paper-section
+name: Validate Paper Section
+version: 0.1.0
+status: proposed
+kdd_stage: documentation
+description: Validates a paper section against academic style, citation coverage and groundedness.
+target_repositories:
+  - 14-paper-reproducibility-kit
+inputs:
+  - name: section_path
+    type: string
+    required: true
+  - name: evidence_packet_path
+    type: string
+    required: true
+outputs:
+  - name: validation_report
+    type: object
+  - name: passed
+    type: boolean
+agents:
+  - reviewer_agent
+  - kdd_admin_agent
+required_skills:
+  - validate_paper_section
+required_tools:
+  - filesystem.read
+  - documentation.validate_academic_style
+approval:
+  required: false
+  reason: Validation is read-only.
+steps:
+  - id: load_section
+    type: tool
+    tool: filesystem.read
+  - id: load_evidence
+    type: tool
+    tool: filesystem.read
+  - id: validate_section
+    type: skill
+    skill: validate_paper_section
+evidence:
+  required: true
+  outputs:
+    - validation_report
+    - passed
+metrics:
+  - paper_validation_duration_seconds
+  - groundedness_score

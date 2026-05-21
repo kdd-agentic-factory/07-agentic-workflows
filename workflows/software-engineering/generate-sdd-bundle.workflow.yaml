@@ -1,0 +1,58 @@
+﻿id: generate-sdd-bundle
+name: Generate SDD Bundle
+version: 0.1.0
+status: proposed
+kdd_stage: documentation
+description: Generates a complete Software Design Document bundle for an existing feature or component.
+target_repositories:
+  - any
+inputs:
+  - name: component_name
+    type: string
+    required: true
+  - name: target_repository
+    type: string
+    required: true
+  - name: scope_description
+    type: string
+    required: true
+outputs:
+  - name: sdd_bundle_path
+    type: string
+  - name: validation_report
+    type: object
+agents:
+  - architect_agent
+  - documentation_agent
+  - reviewer_agent
+required_skills:
+  - generate_requirements
+  - generate_design_doc
+  - generate_as_built
+required_tools:
+  - filesystem.write
+  - documentation.validate_markdown
+approval:
+  required: false
+  reason: SDD generation is documentation only.
+steps:
+  - id: generate_requirements
+    type: skill
+    skill: generate_requirements
+  - id: generate_design_doc
+    type: skill
+    skill: generate_design_doc
+  - id: generate_as_built
+    type: skill
+    skill: generate_as_built
+  - id: validate_bundle
+    type: tool
+    tool: documentation.validate_markdown
+evidence:
+  required: true
+  outputs:
+    - sdd_bundle_path
+    - validation_report
+metrics:
+  - sdd_generation_duration_seconds
+  - sdd_completeness_score

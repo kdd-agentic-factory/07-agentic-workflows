@@ -1,0 +1,45 @@
+﻿id: clean-telemetry
+name: Clean Telemetry
+version: 0.1.0
+status: proposed
+kdd_stage: preprocessing
+description: Applies cleaning, filtering and normalisation to a raw telemetry session.
+target_repositories:
+  - 06-kdd-data-pipelines
+inputs:
+  - name: session_id
+    type: string
+    required: true
+outputs:
+  - name: cleaned_session_path
+    type: string
+  - name: cleaning_report
+    type: object
+agents:
+  - kdd_admin_agent
+required_skills:
+  - clean_telemetry_session
+required_tools:
+  - telemetry.query_session
+  - filesystem.write
+approval:
+  required: false
+  reason: Cleaning produces a derived artefact, it does not overwrite raw data.
+steps:
+  - id: load_session
+    type: tool
+    tool: telemetry.query_session
+  - id: clean_session
+    type: skill
+    skill: clean_telemetry_session
+  - id: write_cleaned_session
+    type: tool
+    tool: filesystem.write
+evidence:
+  required: true
+  outputs:
+    - cleaned_session_path
+    - cleaning_report
+metrics:
+  - telemetry_cleaning_duration_seconds
+  - outliers_removed_total

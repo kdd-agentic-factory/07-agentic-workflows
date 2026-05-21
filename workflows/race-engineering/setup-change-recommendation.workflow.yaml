@@ -1,0 +1,63 @@
+﻿id: setup-change-recommendation
+name: Setup Change Recommendation
+version: 0.1.0
+status: proposed
+kdd_stage: interpretation
+description: Generates a setup change recommendation validated by simulation before crew chief approval.
+target_repositories:
+  - 15-race-command-center
+  - 17-digital-twin-simulation-lab
+inputs:
+  - name: session_id
+    type: string
+    required: true
+  - name: driver_feedback
+    type: string
+    required: true
+outputs:
+  - name: setup_change
+    type: object
+  - name: simulation_validation
+    type: object
+  - name: recommendation_report
+    type: string
+agents:
+  - crew_chief_agent
+  - simulation_agent
+  - documentation_agent
+required_skills:
+  - generate_setup_change
+  - validate_setup_with_simulation
+required_tools:
+  - telemetry.query_session
+  - simulation.run_scenario
+  - filesystem.write
+approval:
+  required: true
+  approver_role: crew_chief
+  reason: Setup change recommendation requires crew chief validation before applying.
+steps:
+  - id: load_session
+    type: tool
+    tool: telemetry.query_session
+  - id: generate_change
+    type: skill
+    skill: generate_setup_change
+  - id: validate_with_simulation
+    type: skill
+    skill: validate_setup_with_simulation
+  - id: request_approval
+    type: approval
+    approver_role: crew_chief
+  - id: write_recommendation
+    type: tool
+    tool: filesystem.write
+evidence:
+  required: true
+  outputs:
+    - setup_change
+    - simulation_validation
+    - recommendation_report
+metrics:
+  - setup_recommendation_duration_seconds
+  - recommendation_acceptance_rate

@@ -1,0 +1,65 @@
+﻿id: deploy-to-docker
+name: Deploy to Docker
+version: 0.1.0
+status: proposed
+kdd_stage: deployment
+description: Builds and deploys a service as a Docker container with validation and deployment record.
+target_repositories:
+  - any
+inputs:
+  - name: service_name
+    type: string
+    required: true
+  - name: dockerfile_path
+    type: string
+    required: true
+  - name: image_tag
+    type: string
+    required: true
+outputs:
+  - name: image_id
+    type: string
+  - name: deployment_record
+    type: string
+agents:
+  - planner_agent
+  - reviewer_agent
+  - documentation_agent
+required_skills:
+  - validate_dockerfile
+  - generate_deployment_report
+required_tools:
+  - filesystem.read
+  - docker.build_image
+  - docker.run_container
+approval:
+  required: true
+  approver_role: platform_owner
+  reason: Docker deployment modifies the running environment.
+steps:
+  - id: read_dockerfile
+    type: tool
+    tool: filesystem.read
+  - id: validate_dockerfile
+    type: skill
+    skill: validate_dockerfile
+  - id: request_approval
+    type: approval
+    approver_role: platform_owner
+  - id: build_image
+    type: tool
+    tool: docker.build_image
+  - id: run_container
+    type: tool
+    tool: docker.run_container
+  - id: generate_report
+    type: skill
+    skill: generate_deployment_report
+evidence:
+  required: true
+  outputs:
+    - image_id
+    - deployment_record
+metrics:
+  - docker_deployment_duration_seconds
+  - deployment_success_rate

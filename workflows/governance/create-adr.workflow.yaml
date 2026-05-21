@@ -1,0 +1,59 @@
+﻿id: create-adr
+name: Create Architecture Decision Record
+version: 0.1.0
+status: validated
+kdd_stage: documentation
+description: Creates a new Architecture Decision Record for a technical or organisational decision.
+target_repositories:
+  - 00-kdd-governance
+  - any
+inputs:
+  - name: decision_title
+    type: string
+    required: true
+  - name: context
+    type: string
+    required: true
+  - name: decision
+    type: string
+    required: true
+  - name: consequences
+    type: string
+    required: true
+  - name: target_repository
+    type: string
+    required: true
+outputs:
+  - name: adr_path
+    type: string
+  - name: adr_id
+    type: string
+agents:
+  - architect_agent
+  - documentation_agent
+  - reviewer_agent
+required_skills:
+  - generate_adr
+required_tools:
+  - filesystem.write
+  - documentation.validate_markdown
+approval:
+  required: false
+  reason: ADR creation is documentation and does not modify operational systems.
+steps:
+  - id: generate_adr
+    type: skill
+    skill: generate_adr
+  - id: write_adr
+    type: tool
+    tool: filesystem.write
+  - id: validate_adr
+    type: tool
+    tool: documentation.validate_markdown
+evidence:
+  required: true
+  outputs:
+    - adr_path
+    - adr_id
+metrics:
+  - adr_creation_duration_seconds

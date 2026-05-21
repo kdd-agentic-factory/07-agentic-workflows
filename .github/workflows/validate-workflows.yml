@@ -1,0 +1,31 @@
+﻿name: Validate Workflows
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: pip install pyyaml jsonschema pytest
+      - name: Validate workflow schemas
+        run: python validators/validate_workflow_schema.py
+      - name: Validate approval gates
+        run: python validators/validate_approval_gates.py
+      - name: Validate required artifacts
+        run: python validators/validate_required_artifacts.py
+      - name: Validate workflow catalog
+        run: python validators/validate_workflow_catalog.py
+      - name: Validate workflow dependencies
+        run: python validators/validate_workflow_dependencies.py
+      - name: Run tests
+        run: python -m pytest tests/ -v

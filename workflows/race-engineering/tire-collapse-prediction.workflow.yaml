@@ -1,0 +1,50 @@
+﻿id: tire-collapse-prediction
+name: Tire Collapse Prediction
+version: 0.1.0
+status: proposed
+kdd_stage: data_mining
+description: Predicts thermal tire collapse risk based on telemetry patterns and historical data.
+target_repositories:
+  - 06-kdd-data-pipelines
+  - 16-race-ai-copilot
+inputs:
+  - name: session_id
+    type: string
+    required: true
+  - name: current_lap
+    type: number
+    required: false
+outputs:
+  - name: collapse_risk
+    type: object
+  - name: prediction_report
+    type: string
+agents:
+  - kdd_admin_agent
+  - crew_chief_agent
+required_skills:
+  - predict_tire_collapse
+required_tools:
+  - telemetry.query_session
+  - vector.search_context
+approval:
+  required: false
+  reason: Prediction is read-only analysis.
+steps:
+  - id: load_telemetry
+    type: tool
+    tool: telemetry.query_session
+  - id: retrieve_patterns
+    type: tool
+    tool: vector.search_context
+  - id: predict_collapse
+    type: skill
+    skill: predict_tire_collapse
+evidence:
+  required: true
+  outputs:
+    - collapse_risk
+    - prediction_report
+metrics:
+  - tire_prediction_duration_seconds
+  - prediction_confidence_score

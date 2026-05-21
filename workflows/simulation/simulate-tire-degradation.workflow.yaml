@@ -1,0 +1,56 @@
+﻿id: simulate-tire-degradation
+name: Simulate Tire Degradation
+version: 0.1.0
+status: proposed
+kdd_stage: interpretation
+description: Simulates tire degradation for a given compound, setup and track conditions.
+target_repositories:
+  - 17-digital-twin-simulation-lab
+  - 15-race-command-center
+inputs:
+  - name: circuit_id
+    type: string
+    required: true
+  - name: tire_compound
+    type: string
+    required: true
+  - name: setup_id
+    type: string
+    required: true
+  - name: track_temperature_c
+    type: number
+    required: false
+outputs:
+  - name: degradation_curve
+    type: object
+  - name: degradation_report
+    type: string
+agents:
+  - simulation_agent
+  - crew_chief_agent
+required_skills:
+  - simulate_tire_degradation
+  - generate_simulation_report
+required_tools:
+  - simulation.run_scenario
+  - filesystem.write
+approval:
+  required: false
+  reason: Simulation is predictive and does not affect live systems.
+steps:
+  - id: run_degradation_simulation
+    type: tool
+    tool: simulation.run_scenario
+  - id: process_degradation
+    type: skill
+    skill: simulate_tire_degradation
+  - id: generate_report
+    type: skill
+    skill: generate_simulation_report
+evidence:
+  required: true
+  outputs:
+    - degradation_curve
+    - degradation_report
+metrics:
+  - tire_simulation_duration_seconds

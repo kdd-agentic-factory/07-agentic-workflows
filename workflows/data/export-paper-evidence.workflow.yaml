@@ -1,0 +1,50 @@
+﻿id: export-paper-evidence
+name: Export Paper Evidence
+version: 0.1.0
+status: proposed
+kdd_stage: documentation
+description: Exports a structured evidence packet from processed KDD data for the research paper.
+target_repositories:
+  - 06-kdd-data-pipelines
+  - 14-paper-reproducibility-kit
+inputs:
+  - name: session_ids
+    type: array
+    required: true
+  - name: output_path
+    type: string
+    required: true
+outputs:
+  - name: evidence_packet_path
+    type: string
+  - name: session_count
+    type: number
+agents:
+  - kdd_admin_agent
+  - documentation_agent
+required_skills:
+  - generate_evidence_packet
+required_tools:
+  - filesystem.read
+  - filesystem.write
+approval:
+  required: false
+  reason: Evidence export is read-only.
+steps:
+  - id: load_sessions
+    type: tool
+    tool: filesystem.read
+  - id: generate_packet
+    type: skill
+    skill: generate_evidence_packet
+  - id: export_packet
+    type: tool
+    tool: filesystem.write
+evidence:
+  required: true
+  outputs:
+    - evidence_packet_path
+    - session_count
+metrics:
+  - paper_evidence_export_duration_seconds
+  - sessions_included_total

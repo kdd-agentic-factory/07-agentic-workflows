@@ -1,0 +1,59 @@
+﻿id: review-feature-implementation
+name: Review Feature Implementation
+version: 0.1.0
+status: proposed
+kdd_stage: documentation
+description: Reviews a feature implementation against its SDD bundle.
+target_repositories:
+  - any
+inputs:
+  - name: feature_name
+    type: string
+    required: true
+  - name: pull_request_url
+    type: string
+    required: true
+  - name: sdd_bundle_path
+    type: string
+    required: true
+outputs:
+  - name: review_report
+    type: object
+  - name: requirements_coverage
+    type: number
+  - name: review_decision
+    type: string
+agents:
+  - reviewer_agent
+  - architect_agent
+required_skills:
+  - validate_requirements_coverage
+  - generate_review_report
+required_tools:
+  - github.get_pull_request
+  - filesystem.read
+approval:
+  required: false
+  reason: Review is read-only.
+steps:
+  - id: load_pull_request
+    type: tool
+    tool: github.get_pull_request
+  - id: load_sdd_bundle
+    type: tool
+    tool: filesystem.read
+  - id: validate_requirements_coverage
+    type: skill
+    skill: validate_requirements_coverage
+  - id: generate_review_report
+    type: skill
+    skill: generate_review_report
+evidence:
+  required: true
+  outputs:
+    - review_report
+    - requirements_coverage
+    - review_decision
+metrics:
+  - review_duration_seconds
+  - requirements_coverage_score

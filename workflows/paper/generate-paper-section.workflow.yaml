@@ -1,0 +1,73 @@
+﻿id: generate-paper-section
+name: Generate Paper Section
+version: 0.1.0
+status: validated
+kdd_stage: documentation
+description: Generates a paper section using RAG/CAG evidence and documentation validation.
+target_repositories:
+  - 14-paper-reproducibility-kit
+inputs:
+  - name: section_title
+    type: string
+    required: true
+  - name: research_question
+    type: string
+    required: true
+  - name: evidence_query
+    type: string
+    required: true
+  - name: output_path
+    type: string
+    required: true
+outputs:
+  - name: section_path
+    type: string
+  - name: evidence_packet
+    type: object
+  - name: validation_report
+    type: object
+agents:
+  - documentation_agent
+  - reviewer_agent
+  - kdd_admin_agent
+required_skills:
+  - generate_paper_section
+  - validate_paper_section
+  - generate_evidence_packet
+required_tools:
+  - vector.search_context
+  - documentation.generate_paper_section
+  - documentation.validate_academic_style
+  - filesystem.write
+approval:
+  required: false
+  reason: Draft paper sections do not modify operational systems.
+steps:
+  - id: retrieve_context
+    type: tool
+    tool: vector.search_context
+  - id: build_evidence_packet
+    type: skill
+    skill: generate_evidence_packet
+  - id: generate_section
+    type: skill
+    skill: generate_paper_section
+  - id: validate_section
+    type: skill
+    skill: validate_paper_section
+  - id: write_section
+    type: tool
+    tool: filesystem.write
+  - id: export_evidence
+    type: tool
+    tool: filesystem.write
+evidence:
+  required: true
+  outputs:
+    - section_path
+    - evidence_packet
+    - validation_report
+metrics:
+  - paper_section_generation_duration_seconds
+  - citation_coverage
+  - groundedness_score

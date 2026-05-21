@@ -1,0 +1,51 @@
+﻿id: ingest-telemetry-session
+name: Ingest Telemetry Session
+version: 0.1.0
+status: proposed
+kdd_stage: selection
+description: Ingests a raw telemetry session into the KDD data pipeline.
+target_repositories:
+  - 06-kdd-data-pipelines
+inputs:
+  - name: session_id
+    type: string
+    required: true
+  - name: session_path
+    type: string
+    required: true
+  - name: circuit_id
+    type: string
+    required: true
+outputs:
+  - name: session_record_id
+    type: string
+  - name: ingestion_report
+    type: object
+agents:
+  - kdd_admin_agent
+required_skills:
+  - validate_telemetry_format
+required_tools:
+  - filesystem.read
+  - telemetry.ingest_session
+approval:
+  required: false
+  reason: Telemetry ingestion is additive.
+steps:
+  - id: load_session
+    type: tool
+    tool: filesystem.read
+  - id: validate_format
+    type: skill
+    skill: validate_telemetry_format
+  - id: ingest_session
+    type: tool
+    tool: telemetry.ingest_session
+evidence:
+  required: true
+  outputs:
+    - session_record_id
+    - ingestion_report
+metrics:
+  - telemetry_ingestion_duration_seconds
+  - channels_ingested_total

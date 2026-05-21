@@ -1,0 +1,48 @@
+﻿id: extract-features
+name: Extract Features
+version: 0.1.0
+status: proposed
+kdd_stage: transformation
+description: Extracts engineered features from a cleaned telemetry session.
+target_repositories:
+  - 06-kdd-data-pipelines
+inputs:
+  - name: session_id
+    type: string
+    required: true
+  - name: feature_set
+    type: string
+    required: false
+outputs:
+  - name: feature_matrix_path
+    type: string
+  - name: feature_report
+    type: object
+agents:
+  - kdd_admin_agent
+required_skills:
+  - extract_telemetry_features
+required_tools:
+  - telemetry.query_session
+  - filesystem.write
+approval:
+  required: false
+  reason: Feature extraction is a transformation step, not destructive.
+steps:
+  - id: load_cleaned_session
+    type: tool
+    tool: telemetry.query_session
+  - id: extract_features
+    type: skill
+    skill: extract_telemetry_features
+  - id: write_features
+    type: tool
+    tool: filesystem.write
+evidence:
+  required: true
+  outputs:
+    - feature_matrix_path
+    - feature_report
+metrics:
+  - feature_extraction_duration_seconds
+  - features_extracted_total

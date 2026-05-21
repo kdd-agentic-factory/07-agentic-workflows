@@ -1,0 +1,41 @@
+﻿id: build-cag-cache
+name: Build CAG Cache
+version: 0.1.0
+status: proposed
+kdd_stage: transformation
+description: Pre-processes and caches frequently accessed knowledge for the Cache-Augmented Generation engine.
+target_repositories:
+  - 03-rag-cag-knowledge-engine
+inputs:
+  - name: collection
+    type: string
+    required: true
+  - name: cache_strategy
+    type: string
+    required: false
+outputs:
+  - name: cache_id
+    type: string
+  - name: cache_build_report
+    type: object
+agents:
+  - kdd_admin_agent
+required_skills:
+  - build_cag_cache
+required_tools:
+  - vector.build_cache
+approval:
+  required: false
+  reason: Cache building does not modify source data.
+steps:
+  - id: build_cache
+    type: tool
+    tool: vector.build_cache
+evidence:
+  required: true
+  outputs:
+    - cache_id
+    - cache_build_report
+metrics:
+  - cag_cache_build_duration_seconds
+  - cache_hit_rate

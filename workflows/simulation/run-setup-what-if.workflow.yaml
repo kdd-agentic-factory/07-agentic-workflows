@@ -1,0 +1,73 @@
+﻿id: run-setup-what-if
+name: Run Setup What-If Simulation
+version: 0.1.0
+status: proposed
+kdd_stage: interpretation
+description: Runs a digital twin simulation to validate a proposed setup change and classify its risk.
+target_repositories:
+  - 17-digital-twin-simulation-lab
+  - 15-race-command-center
+inputs:
+  - name: session_id
+    type: string
+    required: true
+  - name: setup_change
+    type: object
+    required: true
+  - name: baseline_setup_id
+    type: string
+    required: true
+outputs:
+  - name: simulation_result
+    type: object
+  - name: comparison_report
+    type: string
+  - name: risk_classification
+    type: string
+agents:
+  - simulation_agent
+  - crew_chief_agent
+  - documentation_agent
+  - reviewer_agent
+required_skills:
+  - run_what_if_simulation
+  - compare_simulation_with_baseline
+  - classify_simulation_risk
+  - generate_simulation_report
+required_tools:
+  - simulation.run_scenario
+  - race_command.get_setup
+  - documentation.generate_simulation_report
+  - filesystem.write
+approval:
+  required: false
+  reason: Simulation execution does not apply setup changes to a real or live system.
+steps:
+  - id: load_baseline_setup
+    type: tool
+    tool: race_command.get_setup
+  - id: run_simulation
+    type: tool
+    tool: simulation.run_scenario
+  - id: compare_with_baseline
+    type: skill
+    skill: compare_simulation_with_baseline
+  - id: classify_risk
+    type: skill
+    skill: classify_simulation_risk
+  - id: generate_report
+    type: skill
+    skill: generate_simulation_report
+  - id: export_report
+    type: tool
+    tool: filesystem.write
+evidence:
+  required: true
+  outputs:
+    - simulation_result
+    - comparison_report
+    - risk_classification
+metrics:
+  - simulation_duration_seconds
+  - what_if_success_rate
+  - simulation_validation_score

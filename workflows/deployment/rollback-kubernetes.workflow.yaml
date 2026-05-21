@@ -1,0 +1,57 @@
+﻿id: rollback-kubernetes
+name: Rollback Kubernetes
+version: 0.1.0
+status: proposed
+kdd_stage: deployment
+description: Rolls back a Kubernetes deployment to the previous stable version.
+target_repositories:
+  - 11-infra-kubernetes
+inputs:
+  - name: service_name
+    type: string
+    required: true
+  - name: namespace
+    type: string
+    required: true
+  - name: rollback_revision
+    type: string
+    required: false
+outputs:
+  - name: rollback_status
+    type: string
+  - name: incident_record
+    type: string
+agents:
+  - planner_agent
+  - reviewer_agent
+required_skills:
+  - generate_incident_record
+required_tools:
+  - kubernetes.rollback_deployment
+  - kubernetes.get_pods
+  - filesystem.write
+approval:
+  required: true
+  approver_role: platform_owner
+  reason: Rollback modifies the running infrastructure and must be authorised.
+steps:
+  - id: request_approval
+    type: approval
+    approver_role: platform_owner
+  - id: execute_rollback
+    type: tool
+    tool: kubernetes.rollback_deployment
+  - id: validate_pods
+    type: tool
+    tool: kubernetes.get_pods
+  - id: generate_incident_record
+    type: skill
+    skill: generate_incident_record
+evidence:
+  required: true
+  outputs:
+    - rollback_status
+    - incident_record
+metrics:
+  - rollback_duration_seconds
+  - rollback_success_rate

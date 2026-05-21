@@ -1,0 +1,68 @@
+﻿id: validate-autoskill
+name: Validate AutoSkill
+version: 0.1.0
+status: validated
+kdd_stage: documentation
+description: Validates an AutoSkill candidate before promotion to a validated skill in the registry.
+target_repositories:
+  - 04-skills-autoskills-registry
+inputs:
+  - name: candidate_id
+    type: string
+    required: true
+  - name: proposed_skill_id
+    type: string
+    required: true
+outputs:
+  - name: validation_report
+    type: string
+  - name: promotion_decision
+    type: string
+agents:
+  - planner_agent
+  - reviewer_agent
+  - documentation_agent
+required_skills:
+  - validate_autoskill_contract
+  - validate_autoskill_tests
+  - validate_autoskill_policy
+  - generate_autoskill_validation_report
+  - promote_autoskill
+required_tools:
+  - filesystem.read
+  - filesystem.write
+  - documentation.validate_markdown
+approval:
+  required: true
+  approver_role: architecture_owner
+  reason: AutoSkills cannot be promoted without human approval.
+steps:
+  - id: load_candidate
+    type: tool
+    tool: filesystem.read
+  - id: validate_contract
+    type: skill
+    skill: validate_autoskill_contract
+  - id: validate_tests
+    type: skill
+    skill: validate_autoskill_tests
+  - id: validate_policy
+    type: skill
+    skill: validate_autoskill_policy
+  - id: generate_validation_report
+    type: skill
+    skill: generate_autoskill_validation_report
+  - id: request_human_approval
+    type: approval
+    approver_role: architecture_owner
+  - id: promote_or_reject
+    type: skill
+    skill: promote_autoskill
+evidence:
+  required: true
+  outputs:
+    - validation_report
+    - promotion_decision
+metrics:
+  - autoskill_validation_duration_seconds
+  - autoskill_validation_pass_rate

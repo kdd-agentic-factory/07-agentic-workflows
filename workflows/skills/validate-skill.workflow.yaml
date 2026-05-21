@@ -1,0 +1,50 @@
+﻿id: validate-skill
+name: Validate Skill
+version: 0.1.0
+status: proposed
+kdd_stage: documentation
+description: Validates a skill against its contract, tests and policy before promotion to active status.
+target_repositories:
+  - 04-skills-autoskills-registry
+inputs:
+  - name: skill_id
+    type: string
+    required: true
+outputs:
+  - name: validation_report
+    type: object
+  - name: validation_passed
+    type: boolean
+agents:
+  - reviewer_agent
+  - kdd_admin_agent
+required_skills:
+  - validate_skill_contract
+  - validate_skill_tests
+  - generate_validation_report
+required_tools:
+  - filesystem.read
+approval:
+  required: false
+  reason: Validation is read-only.
+steps:
+  - id: load_skill
+    type: tool
+    tool: filesystem.read
+  - id: validate_contract
+    type: skill
+    skill: validate_skill_contract
+  - id: validate_tests
+    type: skill
+    skill: validate_skill_tests
+  - id: generate_report
+    type: skill
+    skill: generate_validation_report
+evidence:
+  required: true
+  outputs:
+    - validation_report
+    - validation_passed
+metrics:
+  - skill_validation_duration_seconds
+  - skill_validation_pass_rate

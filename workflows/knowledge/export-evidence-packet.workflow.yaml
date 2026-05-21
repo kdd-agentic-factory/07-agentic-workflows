@@ -1,0 +1,50 @@
+﻿id: export-evidence-packet
+name: Export Evidence Packet
+version: 0.1.0
+status: proposed
+kdd_stage: documentation
+description: Exports a structured evidence packet from the knowledge base for paper or audit purposes.
+target_repositories:
+  - 03-rag-cag-knowledge-engine
+  - 14-paper-reproducibility-kit
+inputs:
+  - name: query
+    type: string
+    required: true
+  - name: output_path
+    type: string
+    required: true
+outputs:
+  - name: evidence_packet_path
+    type: string
+  - name: source_count
+    type: number
+agents:
+  - kdd_admin_agent
+  - documentation_agent
+required_skills:
+  - generate_evidence_packet
+required_tools:
+  - vector.search_context
+  - filesystem.write
+approval:
+  required: false
+  reason: Evidence export is read-only from the knowledge base.
+steps:
+  - id: retrieve_evidence
+    type: tool
+    tool: vector.search_context
+  - id: generate_packet
+    type: skill
+    skill: generate_evidence_packet
+  - id: export_packet
+    type: tool
+    tool: filesystem.write
+evidence:
+  required: true
+  outputs:
+    - evidence_packet_path
+    - source_count
+metrics:
+  - evidence_export_duration_seconds
+  - sources_retrieved_total

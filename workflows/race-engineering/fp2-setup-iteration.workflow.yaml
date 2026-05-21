@@ -1,0 +1,67 @@
+﻿id: fp2-setup-iteration
+name: FP2 Setup Iteration
+version: 0.1.0
+status: proposed
+kdd_stage: interpretation
+description: Uses FP2 telemetry to iterate on setup comparing against FP1 baseline.
+target_repositories:
+  - 15-race-command-center
+  - 17-digital-twin-simulation-lab
+inputs:
+  - name: fp1_session_id
+    type: string
+    required: true
+  - name: fp2_session_id
+    type: string
+    required: true
+  - name: circuit_id
+    type: string
+    required: true
+outputs:
+  - name: setup_iteration_report
+    type: string
+  - name: recommended_changes
+    type: object
+agents:
+  - crew_chief_agent
+  - simulation_agent
+  - documentation_agent
+required_skills:
+  - compare_session_performance
+  - generate_setup_iteration
+  - generate_crew_chief_report
+required_tools:
+  - telemetry.query_session
+  - simulation.run_scenario
+  - filesystem.write
+approval:
+  required: true
+  approver_role: crew_chief
+  reason: Setup change recommendations require crew chief sign-off.
+steps:
+  - id: load_sessions
+    type: tool
+    tool: telemetry.query_session
+  - id: compare_performance
+    type: skill
+    skill: compare_session_performance
+  - id: generate_setup_changes
+    type: skill
+    skill: generate_setup_iteration
+  - id: request_approval
+    type: approval
+    approver_role: crew_chief
+  - id: generate_report
+    type: skill
+    skill: generate_crew_chief_report
+  - id: write_report
+    type: tool
+    tool: filesystem.write
+evidence:
+  required: true
+  outputs:
+    - setup_iteration_report
+    - recommended_changes
+metrics:
+  - fp2_iteration_duration_seconds
+  - setup_changes_recommended_total

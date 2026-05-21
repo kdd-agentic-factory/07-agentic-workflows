@@ -1,0 +1,54 @@
+﻿id: validate-repository-compliance
+name: Validate Repository Compliance
+version: 0.1.0
+status: validated
+kdd_stage: documentation
+description: Validates that a repository meets KDD governance standards.
+target_repositories:
+  - 00-kdd-governance
+  - any
+inputs:
+  - name: repository_name
+    type: string
+    required: true
+  - name: repository_path
+    type: string
+    required: true
+outputs:
+  - name: compliance_report
+    type: object
+  - name: compliance_score
+    type: number
+  - name: violations
+    type: array
+agents:
+  - reviewer_agent
+  - kdd_admin_agent
+required_skills:
+  - validate_repository_structure
+  - generate_compliance_report
+required_tools:
+  - filesystem.read
+  - documentation.validate_markdown
+approval:
+  required: false
+  reason: Compliance validation is read-only.
+steps:
+  - id: scan_repository_structure
+    type: skill
+    skill: validate_repository_structure
+  - id: validate_readme
+    type: tool
+    tool: documentation.validate_markdown
+  - id: generate_compliance_report
+    type: skill
+    skill: generate_compliance_report
+evidence:
+  required: true
+  outputs:
+    - compliance_report
+    - compliance_score
+    - violations
+metrics:
+  - repository_compliance_score
+  - compliance_check_duration_seconds

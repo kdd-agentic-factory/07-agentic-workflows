@@ -1,0 +1,55 @@
+﻿id: compare-engine-maps
+name: Compare Engine Maps
+version: 0.1.0
+status: proposed
+kdd_stage: interpretation
+description: Compares two engine map configurations using digital twin simulation.
+target_repositories:
+  - 17-digital-twin-simulation-lab
+inputs:
+  - name: engine_map_a
+    type: string
+    required: true
+  - name: engine_map_b
+    type: string
+    required: true
+  - name: circuit_id
+    type: string
+    required: true
+outputs:
+  - name: comparison_report
+    type: string
+  - name: recommendation
+    type: string
+agents:
+  - simulation_agent
+  - crew_chief_agent
+required_skills:
+  - compare_engine_maps
+  - generate_simulation_report
+required_tools:
+  - simulation.run_scenario
+  - filesystem.write
+approval:
+  required: false
+  reason: Engine map comparison is simulation only.
+steps:
+  - id: simulate_map_a
+    type: tool
+    tool: simulation.run_scenario
+  - id: simulate_map_b
+    type: tool
+    tool: simulation.run_scenario
+  - id: compare_maps
+    type: skill
+    skill: compare_engine_maps
+  - id: generate_report
+    type: skill
+    skill: generate_simulation_report
+evidence:
+  required: true
+  outputs:
+    - comparison_report
+    - recommendation
+metrics:
+  - engine_map_comparison_duration_seconds

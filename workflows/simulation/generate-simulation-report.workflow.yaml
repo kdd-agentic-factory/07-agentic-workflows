@@ -1,0 +1,45 @@
+﻿id: generate-simulation-report
+name: Generate Simulation Report
+version: 0.1.0
+status: proposed
+kdd_stage: documentation
+description: Generates a structured simulation report from a completed simulation run.
+target_repositories:
+  - 17-digital-twin-simulation-lab
+inputs:
+  - name: simulation_run_id
+    type: string
+    required: true
+  - name: output_path
+    type: string
+    required: true
+outputs:
+  - name: report_path
+    type: string
+agents:
+  - simulation_agent
+  - documentation_agent
+required_skills:
+  - generate_simulation_report
+required_tools:
+  - filesystem.read
+  - filesystem.write
+approval:
+  required: false
+  reason: Report generation is documentation only.
+steps:
+  - id: load_simulation_result
+    type: tool
+    tool: filesystem.read
+  - id: generate_report
+    type: skill
+    skill: generate_simulation_report
+  - id: write_report
+    type: tool
+    tool: filesystem.write
+evidence:
+  required: true
+  outputs:
+    - report_path
+metrics:
+  - simulation_report_duration_seconds

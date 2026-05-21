@@ -1,0 +1,43 @@
+﻿id: inspect-service-logs
+name: Inspect Service Logs
+version: 0.1.0
+status: proposed
+kdd_stage: selection
+description: Inspects service logs to detect errors, anomalies or workflow failures.
+target_repositories:
+  - 01-agent-orchestrator
+inputs:
+  - name: service_name
+    type: string
+    required: true
+  - name: time_range
+    type: string
+    required: true
+outputs:
+  - name: log_analysis_report
+    type: object
+  - name: anomalies_found
+    type: boolean
+agents:
+  - kdd_admin_agent
+required_skills:
+  - analyse_service_logs
+required_tools:
+  - kubernetes.get_logs
+approval:
+  required: false
+  reason: Log inspection is read-only.
+steps:
+  - id: collect_logs
+    type: tool
+    tool: kubernetes.get_logs
+  - id: analyse_logs
+    type: skill
+    skill: analyse_service_logs
+evidence:
+  required: true
+  outputs:
+    - log_analysis_report
+    - anomalies_found
+metrics:
+  - log_inspection_duration_seconds

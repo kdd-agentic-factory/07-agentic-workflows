@@ -1,0 +1,17 @@
+﻿{
+  "workflow_id": "pre-grand-prix",
+  "inputs": {
+    "circuit_id": "jerez",
+    "race_weekend_id": "jerez-2026",
+    "weather_forecast": {
+      "track_temperature_c": 42,
+      "air_temperature_c": 29,
+      "rain_probability": 0.05
+    },
+    "baseline_setup_id": "setup-jerez-baseline-v1"
+  },
+  "context": {
+    "environment": "development",
+    "session_id": "weekend-jerez-2026"
+  }
+}

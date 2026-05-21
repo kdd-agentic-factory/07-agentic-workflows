@@ -1,0 +1,256 @@
+﻿workflows:
+  - id: create-new-repository
+    path: workflows/governance/create-new-repository.workflow.yaml
+    category: governance
+    status: validated
+    owner: architecture
+  - id: update-governance-policy
+    path: workflows/governance/update-governance-policy.workflow.yaml
+    category: governance
+    status: proposed
+    owner: architecture
+  - id: create-adr
+    path: workflows/governance/create-adr.workflow.yaml
+    category: governance
+    status: validated
+    owner: architecture
+  - id: validate-repository-compliance
+    path: workflows/governance/validate-repository-compliance.workflow.yaml
+    category: governance
+    status: validated
+    owner: architecture
+  - id: create-new-feature
+    path: workflows/software-engineering/create-new-feature.workflow.yaml
+    category: software-engineering
+    status: validated
+    owner: ai-platform
+  - id: generate-sdd-bundle
+    path: workflows/software-engineering/generate-sdd-bundle.workflow.yaml
+    category: software-engineering
+    status: proposed
+    owner: ai-platform
+  - id: review-feature-implementation
+    path: workflows/software-engineering/review-feature-implementation.workflow.yaml
+    category: software-engineering
+    status: proposed
+    owner: ai-platform
+  - id: generate-as-built
+    path: workflows/software-engineering/generate-as-built.workflow.yaml
+    category: software-engineering
+    status: proposed
+    owner: ai-platform
+  - id: open-pull-request
+    path: workflows/software-engineering/open-pull-request.workflow.yaml
+    category: software-engineering
+    status: proposed
+    owner: ai-platform
+  - id: create-new-skill
+    path: workflows/skills/create-new-skill.workflow.yaml
+    category: skills
+    status: proposed
+    owner: ai-platform
+  - id: validate-skill
+    path: workflows/skills/validate-skill.workflow.yaml
+    category: skills
+    status: proposed
+    owner: ai-platform
+  - id: detect-autoskill-candidate
+    path: workflows/skills/detect-autoskill-candidate.workflow.yaml
+    category: skills
+    status: proposed
+    owner: ai-platform
+  - id: validate-autoskill
+    path: workflows/skills/validate-autoskill.workflow.yaml
+    category: skills
+    status: validated
+    owner: ai-platform
+  - id: promote-autoskill
+    path: workflows/skills/promote-autoskill.workflow.yaml
+    category: skills
+    status: proposed
+    owner: ai-platform
+  - id: ingest-document
+    path: workflows/knowledge/ingest-document.workflow.yaml
+    category: knowledge
+    status: proposed
+    owner: knowledge
+  - id: index-repository
+    path: workflows/knowledge/index-repository.workflow.yaml
+    category: knowledge
+    status: proposed
+    owner: knowledge
+  - id: build-cag-cache
+    path: workflows/knowledge/build-cag-cache.workflow.yaml
+    category: knowledge
+    status: proposed
+    owner: knowledge
+  - id: evaluate-rag-quality
+    path: workflows/knowledge/evaluate-rag-quality.workflow.yaml
+    category: knowledge
+    status: proposed
+    owner: knowledge
+  - id: export-evidence-packet
+    path: workflows/knowledge/export-evidence-packet.workflow.yaml
+    category: knowledge
+    status: proposed
+    owner: knowledge
+  - id: ingest-telemetry-session
+    path: workflows/data/ingest-telemetry-session.workflow.yaml
+    category: data
+    status: proposed
+    owner: data-engineering
+  - id: clean-telemetry
+    path: workflows/data/clean-telemetry.workflow.yaml
+    category: data
+    status: proposed
+    owner: data-engineering
+  - id: extract-features
+    path: workflows/data/extract-features.workflow.yaml
+    category: data
+    status: proposed
+    owner: data-engineering
+  - id: mine-patterns
+    path: workflows/data/mine-patterns.workflow.yaml
+    category: data
+    status: proposed
+    owner: data-engineering
+  - id: export-paper-evidence
+    path: workflows/data/export-paper-evidence.workflow.yaml
+    category: data
+    status: proposed
+    owner: data-engineering
+  - id: generate-paper-section
+    path: workflows/paper/generate-paper-section.workflow.yaml
+    category: paper
+    status: validated
+    owner: research
+  - id: validate-paper-section
+    path: workflows/paper/validate-paper-section.workflow.yaml
+    category: paper
+    status: proposed
+    owner: research
+  - id: generate-results-table
+    path: workflows/paper/generate-results-table.workflow.yaml
+    category: paper
+    status: proposed
+    owner: research
+  - id: generate-reproducibility-report
+    path: workflows/paper/generate-reproducibility-report.workflow.yaml
+    category: paper
+    status: proposed
+    owner: research
+  - id: build-paper-artifact
+    path: workflows/paper/build-paper-artifact.workflow.yaml
+    category: paper
+    status: proposed
+    owner: research
+  - id: pre-grand-prix
+    path: workflows/race-engineering/pre-grand-prix.workflow.yaml
+    category: race-engineering
+    status: proposed
+    owner: race-engineering
+  - id: fp1-analysis
+    path: workflows/race-engineering/fp1-analysis.workflow.yaml
+    category: race-engineering
+    status: proposed
+    owner: race-engineering
+  - id: fp2-setup-iteration
+    path: workflows/race-engineering/fp2-setup-iteration.workflow.yaml
+    category: race-engineering
+    status: proposed
+    owner: race-engineering
+  - id: qualifying-optimization
+    path: workflows/race-engineering/qualifying-optimization.workflow.yaml
+    category: race-engineering
+    status: proposed
+    owner: race-engineering
+  - id: race-strategy
+    path: workflows/race-engineering/race-strategy.workflow.yaml
+    category: race-engineering
+    status: proposed
+    owner: race-engineering
+  - id: tire-collapse-prediction
+    path: workflows/race-engineering/tire-collapse-prediction.workflow.yaml
+    category: race-engineering
+    status: proposed
+    owner: race-engineering
+  - id: setup-change-recommendation
+    path: workflows/race-engineering/setup-change-recommendation.workflow.yaml
+    category: race-engineering
+    status: proposed
+    owner: race-engineering
+  - id: crew-chief-report
+    path: workflows/race-engineering/crew-chief-report.workflow.yaml
+    category: race-engineering
+    status: proposed
+    owner: race-engineering
+  - id: run-setup-what-if
+    path: workflows/simulation/run-setup-what-if.workflow.yaml
+    category: simulation
+    status: proposed
+    owner: simulation
+  - id: compare-engine-maps
+    path: workflows/simulation/compare-engine-maps.workflow.yaml
+    category: simulation
+    status: proposed
+    owner: simulation
+  - id: simulate-tire-degradation
+    path: workflows/simulation/simulate-tire-degradation.workflow.yaml
+    category: simulation
+    status: proposed
+    owner: simulation
+  - id: evaluate-circuit-part
+    path: workflows/simulation/evaluate-circuit-part.workflow.yaml
+    category: simulation
+    status: proposed
+    owner: simulation
+  - id: generate-simulation-report
+    path: workflows/simulation/generate-simulation-report.workflow.yaml
+    category: simulation
+    status: proposed
+    owner: simulation
+  - id: deploy-to-docker
+    path: workflows/deployment/deploy-to-docker.workflow.yaml
+    category: deployment
+    status: proposed
+    owner: platform
+  - id: deploy-to-kubernetes
+    path: workflows/deployment/deploy-to-kubernetes.workflow.yaml
+    category: deployment
+    status: proposed
+    owner: platform
+  - id: rollback-kubernetes
+    path: workflows/deployment/rollback-kubernetes.workflow.yaml
+    category: deployment
+    status: proposed
+    owner: platform
+  - id: validate-deployment-health
+    path: workflows/deployment/validate-deployment-health.workflow.yaml
+    category: deployment
+    status: proposed
+    owner: platform
+  - id: export-deployment-evidence
+    path: workflows/deployment/export-deployment-evidence.workflow.yaml
+    category: deployment
+    status: proposed
+    owner: platform
+  - id: collect-workflow-metrics
+    path: workflows/observability/collect-workflow-metrics.workflow.yaml
+    category: observability
+    status: proposed
+    owner: platform
+  - id: generate-observability-report
+    path: workflows/observability/generate-observability-report.workflow.yaml
+    category: observability
+    status: proposed
+    owner: platform
+  - id: inspect-service-logs
+    path: workflows/observability/inspect-service-logs.workflow.yaml
+    category: observability
+    status: proposed
+    owner: platform
+  - id: detect-workflow-failures
+    path: workflows/observability/detect-workflow-failures.workflow.yaml
+    category: observability
+    status: proposed
+    owner: platform

@@ -1,0 +1,10 @@
+﻿{
+  "workflow_id": "validate-autoskill",
+  "inputs": {
+    "candidate_id": "candidate-generate-session-summary-v1",
+    "proposed_skill_id": "generate_session_summary"
+  },
+  "context": {
+    "environment": "development"
+  }
+}

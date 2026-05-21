@@ -1,0 +1,12 @@
+﻿{
+  "workflow_id": "generate-paper-section",
+  "inputs": {
+    "section_title": "Race Command Center Architecture",
+    "research_question": "How does the dashboard operationalize the KDD-governed multi-agent architecture?",
+    "evidence_query": "Race Command Center KDD multi-agent architecture telemetry dashboard",
+    "output_path": "paper/sections/03-architecture-race-command-center.tex"
+  },
+  "context": {
+    "environment": "development"
+  }
+}

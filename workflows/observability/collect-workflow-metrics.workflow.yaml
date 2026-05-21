@@ -1,0 +1,45 @@
+﻿id: collect-workflow-metrics
+name: Collect Workflow Metrics
+version: 0.1.0
+status: proposed
+kdd_stage: selection
+description: Collects execution metrics from completed workflow runs for observability and reporting.
+target_repositories:
+  - 01-agent-orchestrator
+inputs:
+  - name: time_range
+    type: string
+    required: true
+outputs:
+  - name: metrics_report
+    type: object
+  - name: metrics_export_path
+    type: string
+agents:
+  - kdd_admin_agent
+required_skills:
+  - aggregate_workflow_metrics
+required_tools:
+  - telemetry.query_workflow_runs
+  - filesystem.write
+approval:
+  required: false
+  reason: Metric collection is read-only.
+steps:
+  - id: query_runs
+    type: tool
+    tool: telemetry.query_workflow_runs
+  - id: aggregate_metrics
+    type: skill
+    skill: aggregate_workflow_metrics
+  - id: export_metrics
+    type: tool
+    tool: filesystem.write
+evidence:
+  required: true
+  outputs:
+    - metrics_report
+    - metrics_export_path
+metrics:
+  - metrics_collection_duration_seconds
+  - workflow_runs_processed_total

@@ -1,0 +1,45 @@
+﻿id: crew-chief-report
+name: Crew Chief Report
+version: 0.1.0
+status: proposed
+kdd_stage: documentation
+description: Generates a crew chief summary report from session telemetry, analysis and recommendations.
+target_repositories:
+  - 15-race-command-center
+inputs:
+  - name: session_id
+    type: string
+    required: true
+  - name: report_type
+    type: string
+    required: true
+outputs:
+  - name: report_path
+    type: string
+agents:
+  - crew_chief_agent
+  - documentation_agent
+required_skills:
+  - generate_crew_chief_report
+required_tools:
+  - telemetry.query_session
+  - filesystem.write
+approval:
+  required: false
+  reason: Report generation is documentation only.
+steps:
+  - id: load_session
+    type: tool
+    tool: telemetry.query_session
+  - id: generate_report
+    type: skill
+    skill: generate_crew_chief_report
+  - id: write_report
+    type: tool
+    tool: filesystem.write
+evidence:
+  required: true
+  outputs:
+    - report_path
+metrics:
+  - crew_chief_report_duration_seconds

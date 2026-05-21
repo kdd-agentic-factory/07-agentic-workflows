@@ -1,0 +1,31 @@
+﻿ownership:
+  teams:
+    - id: architecture
+      description: Platform architecture team
+    - id: ai-platform
+      description: AI platform engineering team
+    - id: research
+      description: KDD research team
+    - id: race-engineering
+      description: Race engineering and copilot team
+    - id: simulation
+      description: Digital twin simulation team
+    - id: data-engineering
+      description: KDD data pipelines team
+    - id: knowledge
+      description: RAG/CAG knowledge engine team
+    - id: platform
+      description: Platform and infrastructure team
+  approver_roles:
+    - role: architecture_owner
+      team: architecture
+      description: Required for repository creation, ADR, policy changes and AutoSkill promotion.
+    - role: governance_owner
+      team: architecture
+      description: Required for governance policy updates.
+    - role: crew_chief
+      team: race-engineering
+      description: Required for setup changes, race strategy and GP preparation.
+    - role: platform_owner
+      team: platform
+      description: Required for Kubernetes and Docker deployments and rollbacks.

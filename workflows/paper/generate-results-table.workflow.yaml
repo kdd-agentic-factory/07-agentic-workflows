@@ -1,0 +1,51 @@
+﻿id: generate-results-table
+name: Generate Results Table
+version: 0.1.0
+status: proposed
+kdd_stage: documentation
+description: Generates a LaTeX results table from KDD experiment data for inclusion in the paper.
+target_repositories:
+  - 14-paper-reproducibility-kit
+inputs:
+  - name: experiment_ids
+    type: array
+    required: true
+  - name: table_caption
+    type: string
+    required: true
+  - name: output_path
+    type: string
+    required: true
+outputs:
+  - name: table_path
+    type: string
+  - name: data_source_record
+    type: object
+agents:
+  - documentation_agent
+  - kdd_admin_agent
+required_skills:
+  - generate_latex_table
+required_tools:
+  - filesystem.read
+  - filesystem.write
+approval:
+  required: false
+  reason: Table generation is documentation only.
+steps:
+  - id: load_experiment_data
+    type: tool
+    tool: filesystem.read
+  - id: generate_table
+    type: skill
+    skill: generate_latex_table
+  - id: write_table
+    type: tool
+    tool: filesystem.write
+evidence:
+  required: true
+  outputs:
+    - table_path
+    - data_source_record
+metrics:
+  - table_generation_duration_seconds

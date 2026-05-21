@@ -1,0 +1,63 @@
+﻿id: fp1-analysis
+name: FP1 Analysis
+version: 0.1.0
+status: proposed
+kdd_stage: interpretation
+description: Analyses FP1 telemetry to extract lap performance, setup behaviour and initial race pace indicators.
+target_repositories:
+  - 15-race-command-center
+  - 06-kdd-data-pipelines
+inputs:
+  - name: session_id
+    type: string
+    required: true
+  - name: circuit_id
+    type: string
+    required: true
+outputs:
+  - name: fp1_analysis_report
+    type: string
+  - name: lap_performance_summary
+    type: object
+  - name: setup_observations
+    type: object
+agents:
+  - crew_chief_agent
+  - kdd_admin_agent
+  - documentation_agent
+required_skills:
+  - analyse_session_laps
+  - extract_setup_observations
+  - generate_session_report
+required_tools:
+  - telemetry.query_session
+  - vector.search_context
+  - filesystem.write
+approval:
+  required: false
+  reason: FP1 analysis is read-only processing of telemetry data.
+steps:
+  - id: load_fp1_telemetry
+    type: tool
+    tool: telemetry.query_session
+  - id: analyse_laps
+    type: skill
+    skill: analyse_session_laps
+  - id: extract_observations
+    type: skill
+    skill: extract_setup_observations
+  - id: generate_report
+    type: skill
+    skill: generate_session_report
+  - id: write_report
+    type: tool
+    tool: filesystem.write
+evidence:
+  required: true
+  outputs:
+    - fp1_analysis_report
+    - lap_performance_summary
+    - setup_observations
+metrics:
+  - fp1_analysis_duration_seconds
+  - laps_analysed_total

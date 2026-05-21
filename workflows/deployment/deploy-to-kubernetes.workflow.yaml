@@ -1,0 +1,79 @@
+﻿id: deploy-to-kubernetes
+name: Deploy to Kubernetes
+version: 0.1.0
+status: proposed
+kdd_stage: deployment
+description: Deploys a service to Kubernetes with validation, approval, health checks and rollback plan.
+target_repositories:
+  - 11-infra-kubernetes
+inputs:
+  - name: service_name
+    type: string
+    required: true
+  - name: namespace
+    type: string
+    required: true
+  - name: manifest_path
+    type: string
+    required: true
+outputs:
+  - name: deployment_status
+    type: string
+  - name: health_report
+    type: object
+  - name: rollback_plan
+    type: string
+agents:
+  - planner_agent
+  - reviewer_agent
+  - documentation_agent
+required_skills:
+  - validate_kubernetes_manifest
+  - generate_deployment_report
+  - generate_rollback_plan
+  - generate_as_built
+required_tools:
+  - filesystem.read
+  - kubernetes.apply_manifest
+  - kubernetes.get_pods
+  - kubernetes.get_logs
+  - documentation.generate_as_built
+approval:
+  required: true
+  approver_role: platform_owner
+  reason: Kubernetes deployment modifies runtime infrastructure.
+steps:
+  - id: read_manifest
+    type: tool
+    tool: filesystem.read
+  - id: validate_manifest
+    type: skill
+    skill: validate_kubernetes_manifest
+  - id: generate_rollback_plan
+    type: skill
+    skill: generate_rollback_plan
+  - id: request_platform_approval
+    type: approval
+    approver_role: platform_owner
+  - id: apply_manifest
+    type: tool
+    tool: kubernetes.apply_manifest
+  - id: validate_pods
+    type: tool
+    tool: kubernetes.get_pods
+  - id: collect_logs
+    type: tool
+    tool: kubernetes.get_logs
+  - id: generate_as_built
+    type: skill
+    skill: generate_as_built
+evidence:
+  required: true
+  outputs:
+    - deployment_status
+    - health_report
+    - rollback_plan
+metrics:
+  - deployment_duration_seconds
+  - deployment_success_rate
+  - rollback_plan_completeness

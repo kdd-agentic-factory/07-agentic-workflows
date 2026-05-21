@@ -1,0 +1,95 @@
+﻿id: pre-grand-prix
+name: Pre Grand Prix Preparation
+version: 0.1.0
+status: proposed
+kdd_stage: interpretation
+description: Prepares a race weekend using circuit profile, historical telemetry, setup baseline, part recommendations and crew chief validation.
+target_repositories:
+  - 15-race-command-center
+  - 16-race-ai-copilot
+  - 17-digital-twin-simulation-lab
+inputs:
+  - name: circuit_id
+    type: string
+    required: true
+  - name: race_weekend_id
+    type: string
+    required: true
+  - name: weather_forecast
+    type: object
+    required: false
+  - name: baseline_setup_id
+    type: string
+    required: false
+outputs:
+  - name: pre_gp_report
+    type: string
+  - name: fp1_run_plan
+    type: string
+  - name: setup_baseline
+    type: object
+  - name: circuit_parts_recommendation
+    type: object
+agents:
+  - planner_agent
+  - crew_chief_agent
+  - simulation_agent
+  - documentation_agent
+  - reviewer_agent
+required_skills:
+  - retrieve_historical_patterns
+  - generate_baseline_setup
+  - generate_circuit_parts_recommendation
+  - generate_crew_chief_report
+  - generate_fp1_run_plan
+required_tools:
+  - vector.search_context
+  - telemetry.query_historical_sessions
+  - simulation.run_scenario
+  - race_command.get_circuit_profile
+  - race_command.get_baseline_setup
+  - documentation.generate_crew_chief_report
+  - filesystem.write
+approval:
+  required: true
+  approver_role: crew_chief
+  reason: Pre-GP setup and part recommendations require crew chief approval before being used.
+steps:
+  - id: load_circuit_profile
+    type: tool
+    tool: race_command.get_circuit_profile
+  - id: retrieve_historical_patterns
+    type: tool
+    tool: vector.search_context
+  - id: load_baseline_setup
+    type: tool
+    tool: race_command.get_baseline_setup
+  - id: simulate_baseline
+    type: tool
+    tool: simulation.run_scenario
+  - id: recommend_setup_baseline
+    type: skill
+    skill: generate_baseline_setup
+  - id: recommend_circuit_parts
+    type: skill
+    skill: generate_circuit_parts_recommendation
+  - id: generate_pre_gp_report
+    type: skill
+    skill: generate_crew_chief_report
+  - id: request_crew_chief_approval
+    type: approval
+    approver_role: crew_chief
+  - id: generate_fp1_plan
+    type: skill
+    skill: generate_fp1_run_plan
+evidence:
+  required: true
+  outputs:
+    - pre_gp_report
+    - setup_baseline
+    - circuit_parts_recommendation
+    - fp1_run_plan
+metrics:
+  - pre_gp_workflow_duration_seconds
+  - recommendation_acceptance_rate
+  - simulation_validation_score

@@ -1,0 +1,47 @@
+﻿id: validate-deployment-health
+name: Validate Deployment Health
+version: 0.1.0
+status: proposed
+kdd_stage: deployment
+description: Validates the health of a deployed service by checking pod status, logs and readiness probes.
+target_repositories:
+  - 11-infra-kubernetes
+inputs:
+  - name: service_name
+    type: string
+    required: true
+  - name: namespace
+    type: string
+    required: true
+outputs:
+  - name: health_report
+    type: object
+  - name: health_status
+    type: string
+agents:
+  - reviewer_agent
+required_skills:
+  - generate_health_report
+required_tools:
+  - kubernetes.get_pods
+  - kubernetes.get_logs
+approval:
+  required: false
+  reason: Health validation is read-only.
+steps:
+  - id: check_pods
+    type: tool
+    tool: kubernetes.get_pods
+  - id: collect_logs
+    type: tool
+    tool: kubernetes.get_logs
+  - id: generate_report
+    type: skill
+    skill: generate_health_report
+evidence:
+  required: true
+  outputs:
+    - health_report
+    - health_status
+metrics:
+  - health_validation_duration_seconds

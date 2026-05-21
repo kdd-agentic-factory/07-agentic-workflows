@@ -1,0 +1,48 @@
+﻿id: mine-patterns
+name: Mine Patterns
+version: 0.1.0
+status: proposed
+kdd_stage: data_mining
+description: Applies KDD data mining algorithms to a feature matrix to discover patterns, clusters or anomalies.
+target_repositories:
+  - 06-kdd-data-pipelines
+inputs:
+  - name: session_id
+    type: string
+    required: true
+  - name: algorithm
+    type: string
+    required: false
+outputs:
+  - name: patterns_path
+    type: string
+  - name: mining_report
+    type: object
+agents:
+  - kdd_admin_agent
+required_skills:
+  - run_pattern_mining
+required_tools:
+  - filesystem.read
+  - filesystem.write
+approval:
+  required: false
+  reason: Pattern mining is analysis only.
+steps:
+  - id: load_features
+    type: tool
+    tool: filesystem.read
+  - id: run_mining
+    type: skill
+    skill: run_pattern_mining
+  - id: write_patterns
+    type: tool
+    tool: filesystem.write
+evidence:
+  required: true
+  outputs:
+    - patterns_path
+    - mining_report
+metrics:
+  - pattern_mining_duration_seconds
+  - patterns_discovered_total

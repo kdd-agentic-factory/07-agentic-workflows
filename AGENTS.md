@@ -1,46 +1,139 @@
-# AGENTS.md
+﻿# AGENTS.md - Agentic Workflows
 
-Guia operativa para agentes que trabajen en `07-agentic-workflows`.
+## Repository Mission
 
-## Proposito
+This repository defines declarative workflows for the KDD-governed agentic race engineering platform.
+It coordinates agents, skills, MCP tools, data pipelines, documentation, simulations and human
+approvals into traceable, versioned and auditable processes.
 
-Este repositorio contiene logica de proceso: workflows, contratos, ejemplos y
-validaciones. No debe absorber implementaciones de producto, conectores pesados,
-scripts de despliegue especificos de un cliente ni codigo de dominio que deba
-vivir en otro repositorio.
+---
 
-## Reglas de trabajo
+## Mandatory Rules
 
-- Mantener los workflows declarativos y legibles.
-- Preferir contratos explicitos de entrada y salida.
-- Documentar decisiones de proceso dentro del workflow, no en codigo externo.
-- Mantener ejemplos pequenos, trazables y ejecutables mentalmente.
-- Anadir pruebas cuando se cree o cambie la estructura de workflows.
-- Evitar secretos, credenciales, rutas locales personales y configuraciones de
-  infraestructura real.
+- Do not implement business logic in workflow files.
+- Do not define workflows without `kdd_stage`.
+- Do not define workflows without `inputs` and `outputs`.
+- Do not call unregistered skills.
+- Do not call unregistered MCP tools.
+- Do not omit approval gates for critical actions.
+- Do not create race engineering action workflows without evidence requirements.
+- Do not create deployment workflows without rollback and health validation.
+- Do not merge a workflow with `status: proposed` directly to production use.
+- Do not reference credentials, secrets or personal local paths in workflows.
 
-## Formato recomendado
+---
 
-Cada workflow debe incluir, como minimo:
+## Allowed Responsibilities
 
-- `id`
-- `version`
-- `description`
-- `inputs`
-- `outputs`
-- `guards`
-- `steps`
+- Define workflows in YAML.
+- Version workflows using semver.
+- Document workflow intent and rationale.
+- Declare agents, skills and tools per workflow.
+- Declare approval gates per workflow.
+- Declare evidence outputs per workflow.
+- Define observability metrics per workflow.
+- Validate workflow schema, dependencies and catalog.
+- Maintain catalog and maturity files.
 
-Los pasos deben expresar responsabilidades, no implementaciones. Un buen paso
-dice que artefacto se valida o produce; un mal paso codifica detalles internos
-que pertenecen a otro repositorio.
+---
 
-## Criterio de calidad
+## Forbidden Responsibilities
 
-Un workflow esta listo cuando otra persona puede entender:
+- Executing workflows directly.
+- Implementing algorithms or domain logic.
+- Writing production application code.
+- Deploying infrastructure.
+- Generating final documents or reports.
+- Training or fine-tuning models.
+- Managing secrets or credentials.
 
-1. Que problema resuelve.
-2. Que necesita para empezar.
-3. Que produce al terminar.
-4. Que controles aplican antes de avanzar.
-5. Donde se conectaria la logica de codigo externa.
+---
+
+## Workflow Quality Criteria
+
+A workflow is ready when another agent or engineer can answer:
+
+1. What problem does this solve?
+2. What inputs does it need to start?
+3. What outputs does it produce when complete?
+4. What controls apply before advancing?
+5. Who must approve critical steps?
+6. What evidence must be recorded?
+7. Which KDD stage does this represent?
+
+---
+
+## Workflow Format
+
+Every workflow must include at minimum:
+
+```yaml
+id:
+name:
+version:
+status:
+kdd_stage:
+description:
+inputs:
+outputs:
+agents:
+required_skills:
+required_tools:
+approval:
+steps:
+evidence:
+metrics:
+```
+
+---
+
+## KDD Stage Mapping
+
+| Stage | When to use |
+|---|---|
+| `selection` | Workflows that select data, sessions or repositories to process |
+| `preprocessing` | Workflows that clean, filter or normalise data |
+| `transformation` | Workflows that extract features or build representations |
+| `data_mining` | Workflows that run pattern mining, clustering or prediction |
+| `interpretation` | Workflows that generate insights, recommendations or decisions |
+| `documentation` | Workflows that generate artefacts, reports or specifications |
+| `deployment` | Workflows that deploy, configure or decommission services |
+
+---
+
+## Approval Gate Policy
+
+A workflow must set `approval.required: true` when it:
+
+- Creates or deletes a repository.
+- Promotes an AutoSkill to validated status.
+- Applies a setup change recommendation to a physical or simulated car.
+- Deploys to Kubernetes or any production environment.
+- Modifies governance policy.
+- Makes a critical race engineering decision.
+
+---
+
+## Step Types
+
+| Type | Description |
+|---|---|
+| `agent` | Invokes an agent action |
+| `skill` | Invokes a registered skill |
+| `tool` | Invokes an MCP tool |
+| `approval` | Pauses for human approval |
+
+---
+
+## Agents Reference
+
+| Agent | Role |
+|---|---|
+| `planner_agent` | Decomposes goals and orchestrates multi-step work |
+| `architect_agent` | Validates architectural boundaries and decisions |
+| `builder_agent` | Coordinates implementation tasks |
+| `reviewer_agent` | Validates outputs and enforces quality gates |
+| `documentation_agent` | Generates and validates documentation artefacts |
+| `kdd_admin_agent` | Enforces KDD governance and evidence requirements |
+| `simulation_agent` | Coordinates simulation and what-if analysis |
+| `crew_chief_agent` | Generates race engineering decisions and reports |

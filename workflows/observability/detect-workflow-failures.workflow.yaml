@@ -1,0 +1,46 @@
+﻿id: detect-workflow-failures
+name: Detect Workflow Failures
+version: 0.1.0
+status: proposed
+kdd_stage: interpretation
+description: Detects and classifies workflow failures from execution history to support root cause analysis.
+target_repositories:
+  - 01-agent-orchestrator
+inputs:
+  - name: time_range
+    type: string
+    required: true
+outputs:
+  - name: failure_report
+    type: object
+  - name: failure_count
+    type: number
+agents:
+  - kdd_admin_agent
+  - reviewer_agent
+required_skills:
+  - detect_workflow_failures
+  - classify_failure_cause
+required_tools:
+  - telemetry.query_workflow_runs
+approval:
+  required: false
+  reason: Failure detection is read-only analysis.
+steps:
+  - id: query_runs
+    type: tool
+    tool: telemetry.query_workflow_runs
+  - id: detect_failures
+    type: skill
+    skill: detect_workflow_failures
+  - id: classify_causes
+    type: skill
+    skill: classify_failure_cause
+evidence:
+  required: true
+  outputs:
+    - failure_report
+    - failure_count
+metrics:
+  - failure_detection_duration_seconds
+  - failures_detected_total

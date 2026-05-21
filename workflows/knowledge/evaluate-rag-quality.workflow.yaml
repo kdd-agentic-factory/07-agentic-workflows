@@ -1,0 +1,50 @@
+﻿id: evaluate-rag-quality
+name: Evaluate RAG Quality
+version: 0.1.0
+status: proposed
+kdd_stage: interpretation
+description: Evaluates the quality of RAG retrieval using a benchmark set of queries.
+target_repositories:
+  - 03-rag-cag-knowledge-engine
+inputs:
+  - name: collection
+    type: string
+    required: true
+  - name: benchmark_path
+    type: string
+    required: true
+outputs:
+  - name: quality_report
+    type: object
+  - name: precision_score
+    type: number
+  - name: recall_score
+    type: number
+agents:
+  - reviewer_agent
+  - kdd_admin_agent
+required_skills:
+  - evaluate_retrieval_quality
+required_tools:
+  - vector.search_context
+  - filesystem.read
+approval:
+  required: false
+  reason: Evaluation is read-only.
+steps:
+  - id: load_benchmark
+    type: tool
+    tool: filesystem.read
+  - id: run_evaluation
+    type: skill
+    skill: evaluate_retrieval_quality
+evidence:
+  required: true
+  outputs:
+    - quality_report
+    - precision_score
+    - recall_score
+metrics:
+  - rag_evaluation_duration_seconds
+  - retrieval_precision
+  - retrieval_recall

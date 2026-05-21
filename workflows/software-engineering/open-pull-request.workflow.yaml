@@ -1,0 +1,51 @@
+﻿id: open-pull-request
+name: Open Pull Request
+version: 0.1.0
+status: proposed
+kdd_stage: documentation
+description: Opens a pull request with a generated description, links to SDD documents and checklist.
+target_repositories:
+  - any
+inputs:
+  - name: branch_name
+    type: string
+    required: true
+  - name: target_repository
+    type: string
+    required: true
+  - name: feature_name
+    type: string
+    required: true
+  - name: sdd_bundle_path
+    type: string
+    required: false
+outputs:
+  - name: pull_request_url
+    type: string
+  - name: pull_request_id
+    type: string
+agents:
+  - documentation_agent
+  - reviewer_agent
+required_skills:
+  - generate_pr_description
+required_tools:
+  - github.create_pr
+  - filesystem.read
+approval:
+  required: false
+  reason: PR creation does not modify production systems.
+steps:
+  - id: generate_pr_description
+    type: skill
+    skill: generate_pr_description
+  - id: open_pull_request
+    type: tool
+    tool: github.create_pr
+evidence:
+  required: true
+  outputs:
+    - pull_request_url
+    - pull_request_id
+metrics:
+  - pr_creation_duration_seconds

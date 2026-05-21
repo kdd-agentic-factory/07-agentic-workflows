@@ -1,0 +1,81 @@
+﻿id: create-new-repository
+name: Create New Repository
+version: 0.1.0
+status: validated
+kdd_stage: documentation
+description: Creates a new repository following governance, documentation and ADR rules.
+target_repositories:
+  - 00-kdd-governance
+inputs:
+  - name: repository_name
+    type: string
+    required: true
+  - name: repository_purpose
+    type: string
+    required: true
+  - name: repository_layer
+    type: string
+    required: true
+  - name: owner
+    type: string
+    required: true
+outputs:
+  - name: repository_created
+    type: boolean
+  - name: readme_path
+    type: string
+  - name: agents_path
+    type: string
+  - name: adr_path
+    type: string
+agents:
+  - planner_agent
+  - architect_agent
+  - documentation_agent
+  - reviewer_agent
+required_skills:
+  - generate_readme
+  - generate_agents_md
+  - generate_adr
+  - generate_repository_structure
+required_tools:
+  - github.create_repo
+  - filesystem.write
+  - documentation.validate_markdown
+approval:
+  required: true
+  approver_role: architecture_owner
+  reason: Creating a new repository changes the organisation structure and requires governance sign-off.
+steps:
+  - id: validate_repository_need
+    type: agent
+    agent: architect_agent
+    action: validate_repository_boundary
+  - id: create_repository
+    type: tool
+    tool: github.create_repo
+  - id: generate_readme
+    type: skill
+    skill: generate_readme
+  - id: generate_agents_md
+    type: skill
+    skill: generate_agents_md
+  - id: generate_adr
+    type: skill
+    skill: generate_adr
+  - id: update_repository_catalog
+    type: tool
+    tool: filesystem.write
+  - id: validate_documentation
+    type: tool
+    tool: documentation.validate_markdown
+evidence:
+  required: true
+  outputs:
+    - repository_created
+    - readme_path
+    - agents_path
+    - adr_path
+metrics:
+  - repository_creation_duration_seconds
+  - repository_governance_compliance

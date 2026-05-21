@@ -1,0 +1,52 @@
+﻿id: evaluate-circuit-part
+name: Evaluate Circuit Part
+version: 0.1.0
+status: proposed
+kdd_stage: interpretation
+description: Evaluates a specific circuit sector or part using simulation.
+target_repositories:
+  - 17-digital-twin-simulation-lab
+inputs:
+  - name: circuit_id
+    type: string
+    required: true
+  - name: part_id
+    type: string
+    required: true
+  - name: setup_id
+    type: string
+    required: true
+outputs:
+  - name: part_evaluation_report
+    type: string
+  - name: performance_delta
+    type: object
+agents:
+  - simulation_agent
+  - crew_chief_agent
+required_skills:
+  - evaluate_circuit_part
+  - generate_simulation_report
+required_tools:
+  - simulation.run_scenario
+  - filesystem.write
+approval:
+  required: false
+  reason: Circuit evaluation is simulation only.
+steps:
+  - id: simulate_part
+    type: tool
+    tool: simulation.run_scenario
+  - id: evaluate_part
+    type: skill
+    skill: evaluate_circuit_part
+  - id: generate_report
+    type: skill
+    skill: generate_simulation_report
+evidence:
+  required: true
+  outputs:
+    - part_evaluation_report
+    - performance_delta
+metrics:
+  - circuit_evaluation_duration_seconds

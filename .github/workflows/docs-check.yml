@@ -1,0 +1,30 @@
+﻿name: Documentation Check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+    paths:
+      - "docs/**"
+      - "README.md"
+      - "AGENTS.md"
+
+jobs:
+  docs-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check required documentation files exist
+        run: |
+          for f in README.md AGENTS.md docs/architecture.md docs/workflow-design.md \
+                   docs/workflow-lifecycle.md docs/approval-gates.md \
+                   docs/workflow-versioning.md docs/workflow-testing.md; do
+            [ -f "$f" ] || { echo "MISSING: $f"; exit 1; }
+          done
+      - name: Check required catalog files exist
+        run: |
+          for f in catalog/workflows.yaml catalog/workflow-dependencies.yaml \
+                   catalog/workflow-maturity.yaml catalog/workflow-ownership.yaml; do
+            [ -f "$f" ] || { echo "MISSING: $f"; exit 1; }
+          done

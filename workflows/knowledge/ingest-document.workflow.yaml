@@ -1,0 +1,58 @@
+﻿id: ingest-document
+name: Ingest Document
+version: 0.1.0
+status: proposed
+kdd_stage: selection
+description: Ingests a document into the RAG/CAG knowledge base, including chunking, embedding and indexing.
+target_repositories:
+  - 03-rag-cag-knowledge-engine
+inputs:
+  - name: document_path
+    type: string
+    required: true
+  - name: document_type
+    type: string
+    required: true
+  - name: collection
+    type: string
+    required: true
+outputs:
+  - name: document_id
+    type: string
+  - name: chunk_count
+    type: number
+  - name: ingestion_report
+    type: object
+agents:
+  - kdd_admin_agent
+required_skills:
+  - chunk_document
+  - generate_embeddings
+required_tools:
+  - filesystem.read
+  - vector.ingest_document
+approval:
+  required: false
+  reason: Document ingestion is additive.
+steps:
+  - id: load_document
+    type: tool
+    tool: filesystem.read
+  - id: chunk_document
+    type: skill
+    skill: chunk_document
+  - id: generate_embeddings
+    type: skill
+    skill: generate_embeddings
+  - id: ingest_to_vector_store
+    type: tool
+    tool: vector.ingest_document
+evidence:
+  required: true
+  outputs:
+    - document_id
+    - chunk_count
+    - ingestion_report
+metrics:
+  - document_ingestion_duration_seconds
+  - chunks_ingested_total

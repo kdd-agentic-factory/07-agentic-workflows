@@ -1,0 +1,66 @@
+﻿id: qualifying-optimization
+name: Qualifying Optimization
+version: 0.1.0
+status: proposed
+kdd_stage: interpretation
+description: Generates qualifying setup and lap strategy optimisation based on FP telemetry and circuit simulation.
+target_repositories:
+  - 15-race-command-center
+  - 17-digital-twin-simulation-lab
+inputs:
+  - name: circuit_id
+    type: string
+    required: true
+  - name: race_weekend_id
+    type: string
+    required: true
+outputs:
+  - name: qualifying_setup
+    type: object
+  - name: lap_strategy
+    type: object
+  - name: qualifying_report
+    type: string
+agents:
+  - crew_chief_agent
+  - simulation_agent
+  - documentation_agent
+required_skills:
+  - generate_qualifying_setup
+  - generate_lap_strategy
+  - generate_crew_chief_report
+required_tools:
+  - telemetry.query_historical_sessions
+  - simulation.run_scenario
+  - filesystem.write
+approval:
+  required: true
+  approver_role: crew_chief
+  reason: Qualifying setup requires crew chief approval.
+steps:
+  - id: retrieve_fp_data
+    type: tool
+    tool: telemetry.query_historical_sessions
+  - id: simulate_qualifying
+    type: tool
+    tool: simulation.run_scenario
+  - id: generate_qualifying_setup
+    type: skill
+    skill: generate_qualifying_setup
+  - id: generate_lap_strategy
+    type: skill
+    skill: generate_lap_strategy
+  - id: request_approval
+    type: approval
+    approver_role: crew_chief
+  - id: generate_report
+    type: skill
+    skill: generate_crew_chief_report
+evidence:
+  required: true
+  outputs:
+    - qualifying_setup
+    - lap_strategy
+    - qualifying_report
+metrics:
+  - qualifying_optimization_duration_seconds

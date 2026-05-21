@@ -1,0 +1,52 @@
+﻿id: generate-reproducibility-report
+name: Generate Reproducibility Report
+version: 0.1.0
+status: proposed
+kdd_stage: documentation
+description: Generates a reproducibility report verifying that all paper claims are backed by reproducible experiments.
+target_repositories:
+  - 14-paper-reproducibility-kit
+inputs:
+  - name: paper_path
+    type: string
+    required: true
+  - name: experiments_registry_path
+    type: string
+    required: true
+outputs:
+  - name: reproducibility_report_path
+    type: string
+  - name: reproducibility_score
+    type: number
+agents:
+  - kdd_admin_agent
+  - reviewer_agent
+required_skills:
+  - generate_reproducibility_report
+required_tools:
+  - filesystem.read
+  - filesystem.write
+approval:
+  required: false
+  reason: Report generation is read-only with respect to experiment data.
+steps:
+  - id: load_paper
+    type: tool
+    tool: filesystem.read
+  - id: load_experiments
+    type: tool
+    tool: filesystem.read
+  - id: generate_report
+    type: skill
+    skill: generate_reproducibility_report
+  - id: write_report
+    type: tool
+    tool: filesystem.write
+evidence:
+  required: true
+  outputs:
+    - reproducibility_report_path
+    - reproducibility_score
+metrics:
+  - reproducibility_report_duration_seconds
+  - claim_coverage_rate

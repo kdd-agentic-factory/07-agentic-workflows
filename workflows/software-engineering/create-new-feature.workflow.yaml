@@ -1,0 +1,84 @@
+﻿id: create-new-feature
+name: Create New Feature
+version: 0.1.0
+status: validated
+kdd_stage: documentation
+description: Creates a new feature using Specification-Driven Development (SDD).
+target_repositories:
+  - any
+inputs:
+  - name: feature_name
+    type: string
+    required: true
+  - name: target_repository
+    type: string
+    required: true
+  - name: objective
+    type: string
+    required: true
+  - name: user_story
+    type: string
+    required: false
+outputs:
+  - name: requirements_path
+    type: string
+  - name: feasibility_path
+    type: string
+  - name: design_path
+    type: string
+  - name: tasks_path
+    type: string
+  - name: as_built_path
+    type: string
+agents:
+  - planner_agent
+  - architect_agent
+  - builder_agent
+  - reviewer_agent
+  - documentation_agent
+required_skills:
+  - generate_requirements
+  - generate_feasibility
+  - generate_design_doc
+  - generate_tasks
+  - generate_as_built
+required_tools:
+  - filesystem.write
+  - documentation.validate_markdown
+  - github.create_issue
+approval:
+  required: false
+  reason: Feature specification generation does not modify production systems.
+steps:
+  - id: generate_requirements
+    type: skill
+    skill: generate_requirements
+  - id: generate_feasibility
+    type: skill
+    skill: generate_feasibility
+  - id: generate_design_doc
+    type: skill
+    skill: generate_design_doc
+  - id: generate_tasks
+    type: skill
+    skill: generate_tasks
+  - id: validate_sdd_bundle
+    type: tool
+    tool: documentation.validate_sdd_bundle
+  - id: create_tracking_issue
+    type: tool
+    tool: github.create_issue
+  - id: generate_as_built_stub
+    type: skill
+    skill: generate_as_built
+evidence:
+  required: true
+  outputs:
+    - requirements_path
+    - feasibility_path
+    - design_path
+    - tasks_path
+    - as_built_path
+metrics:
+  - sdd_bundle_completeness_score
+  - feature_spec_generation_duration_seconds

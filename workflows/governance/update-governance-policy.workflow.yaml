@@ -1,0 +1,67 @@
+﻿id: update-governance-policy
+name: Update Governance Policy
+version: 0.1.0
+status: proposed
+kdd_stage: documentation
+description: Updates a governance policy document with audit trail and approval.
+target_repositories:
+  - 00-kdd-governance
+inputs:
+  - name: policy_id
+    type: string
+    required: true
+  - name: proposed_changes
+    type: string
+    required: true
+  - name: requested_by
+    type: string
+    required: true
+outputs:
+  - name: updated_policy_path
+    type: string
+  - name: change_record_path
+    type: string
+agents:
+  - planner_agent
+  - architect_agent
+  - reviewer_agent
+  - documentation_agent
+required_skills:
+  - generate_policy_diff
+  - generate_change_record
+required_tools:
+  - filesystem.read
+  - filesystem.write
+  - documentation.validate_markdown
+  - github.create_pr
+approval:
+  required: true
+  approver_role: governance_owner
+  reason: Policy changes affect all repositories and require governance owner approval.
+steps:
+  - id: load_current_policy
+    type: tool
+    tool: filesystem.read
+  - id: generate_policy_diff
+    type: skill
+    skill: generate_policy_diff
+  - id: request_governance_approval
+    type: approval
+    approver_role: governance_owner
+  - id: apply_policy_update
+    type: tool
+    tool: filesystem.write
+  - id: generate_change_record
+    type: skill
+    skill: generate_change_record
+  - id: create_pull_request
+    type: tool
+    tool: github.create_pr
+evidence:
+  required: true
+  outputs:
+    - updated_policy_path
+    - change_record_path
+metrics:
+  - policy_update_duration_seconds
+  - policy_change_approval_rate

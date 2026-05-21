@@ -1,0 +1,50 @@
+﻿id: detect-autoskill-candidate
+name: Detect AutoSkill Candidate
+version: 0.1.0
+status: proposed
+kdd_stage: interpretation
+description: Analyses agent execution history to identify repeated patterns that are AutoSkill candidates.
+target_repositories:
+  - 04-skills-autoskills-registry
+  - 01-agent-orchestrator
+inputs:
+  - name: execution_history_path
+    type: string
+    required: true
+  - name: detection_threshold
+    type: number
+    required: false
+outputs:
+  - name: candidate_list
+    type: array
+  - name: detection_report
+    type: object
+agents:
+  - kdd_admin_agent
+  - reviewer_agent
+required_skills:
+  - detect_autoskill_candidates
+  - generate_candidate_report
+required_tools:
+  - filesystem.read
+approval:
+  required: false
+  reason: Detection is read-only analysis.
+steps:
+  - id: load_execution_history
+    type: tool
+    tool: filesystem.read
+  - id: detect_candidates
+    type: skill
+    skill: detect_autoskill_candidates
+  - id: generate_report
+    type: skill
+    skill: generate_candidate_report
+evidence:
+  required: true
+  outputs:
+    - candidate_list
+    - detection_report
+metrics:
+  - autoskill_detection_duration_seconds
+  - candidates_detected_total

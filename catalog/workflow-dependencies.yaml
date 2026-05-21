@@ -1,0 +1,67 @@
+﻿dependencies:
+  - workflow_id: create-new-feature
+    depends_on_workflows: []
+    depends_on_repositories:
+      - 04-skills-autoskills-registry
+      - 05-documentation-agent
+  - workflow_id: validate-autoskill
+    depends_on_workflows:
+      - detect-autoskill-candidate
+    depends_on_repositories:
+      - 04-skills-autoskills-registry
+  - workflow_id: promote-autoskill
+    depends_on_workflows:
+      - validate-autoskill
+    depends_on_repositories:
+      - 04-skills-autoskills-registry
+  - workflow_id: generate-paper-section
+    depends_on_workflows:
+      - export-evidence-packet
+      - export-paper-evidence
+    depends_on_repositories:
+      - 03-rag-cag-knowledge-engine
+      - 14-paper-reproducibility-kit
+  - workflow_id: build-paper-artifact
+    depends_on_workflows:
+      - generate-paper-section
+      - generate-results-table
+      - generate-reproducibility-report
+    depends_on_repositories:
+      - 14-paper-reproducibility-kit
+  - workflow_id: pre-grand-prix
+    depends_on_workflows:
+      - ingest-telemetry-session
+      - clean-telemetry
+      - extract-features
+    depends_on_repositories:
+      - 15-race-command-center
+      - 17-digital-twin-simulation-lab
+  - workflow_id: fp1-analysis
+    depends_on_workflows:
+      - ingest-telemetry-session
+      - clean-telemetry
+    depends_on_repositories:
+      - 06-kdd-data-pipelines
+  - workflow_id: fp2-setup-iteration
+    depends_on_workflows:
+      - fp1-analysis
+      - run-setup-what-if
+    depends_on_repositories:
+      - 17-digital-twin-simulation-lab
+  - workflow_id: race-strategy
+    depends_on_workflows:
+      - fp1-analysis
+      - fp2-setup-iteration
+      - simulate-tire-degradation
+    depends_on_repositories:
+      - 15-race-command-center
+  - workflow_id: deploy-to-kubernetes
+    depends_on_workflows:
+      - validate-deployment-health
+    depends_on_repositories:
+      - 11-infra-kubernetes
+  - workflow_id: rollback-kubernetes
+    depends_on_workflows:
+      - deploy-to-kubernetes
+    depends_on_repositories:
+      - 11-infra-kubernetes

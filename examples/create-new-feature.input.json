@@ -1,0 +1,12 @@
+﻿{
+  "workflow_id": "create-new-feature",
+  "inputs": {
+    "feature_name": "telemetry-anomaly-detector",
+    "target_repository": "06-kdd-data-pipelines",
+    "objective": "Detect anomalies in telemetry channels using KDD-mined patterns to alert the race copilot in real time.",
+    "user_story": "As a race engineer, I want the system to detect anomalies in telemetry during a live session so that I can act before a failure occurs."
+  },
+  "context": {
+    "environment": "development"
+  }
+}

@@ -1,0 +1,117 @@
+﻿$schema: "http://json-schema.org/draft-07/schema#"
+title: Workflow
+description: Schema for KDD-governed agentic workflow definitions.
+type: object
+required:
+  - id
+  - name
+  - version
+  - status
+  - kdd_stage
+  - description
+  - inputs
+  - outputs
+  - steps
+properties:
+  id:
+    type: string
+    description: Stable, unique identifier for the workflow (kebab-case).
+    pattern: "^[a-z0-9-]+$"
+  name:
+    type: string
+  version:
+    type: string
+    pattern: "^\\d+\\.\\d+\\.\\d+$"
+  status:
+    type: string
+    enum: [proposed, validated, active, deprecated, disabled]
+  kdd_stage:
+    type: string
+    enum: [selection, preprocessing, transformation, data_mining, interpretation, documentation, deployment]
+  description:
+    type: string
+  target_repositories:
+    type: array
+    items:
+      type: string
+  inputs:
+    type: array
+    items:
+      type: object
+      required: [name, type]
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+        required:
+          type: boolean
+        description:
+          type: string
+  outputs:
+    type: array
+    items:
+      type: object
+      required: [name, type]
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+        description:
+          type: string
+  agents:
+    type: array
+    items:
+      type: string
+  required_skills:
+    type: array
+    items:
+      type: string
+  required_tools:
+    type: array
+    items:
+      type: string
+  approval:
+    type: object
+    properties:
+      required:
+        type: boolean
+      approver_role:
+        type: string
+      reason:
+        type: string
+  steps:
+    type: array
+    items:
+      type: object
+      required: [id, type]
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum: [agent, skill, tool, approval]
+        agent:
+          type: string
+        skill:
+          type: string
+        tool:
+          type: string
+        action:
+          type: string
+        approver_role:
+          type: string
+  evidence:
+    type: object
+    properties:
+      required:
+        type: boolean
+      outputs:
+        type: array
+        items:
+          type: string
+  metrics:
+    type: array
+    items:
+      type: string

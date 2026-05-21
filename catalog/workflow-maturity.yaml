@@ -1,0 +1,42 @@
+﻿maturity:
+  levels:
+    - level: 0
+      name: proposed
+      description: Workflow is defined but has not been tested or used.
+    - level: 1
+      name: validated
+      description: Workflow passes all schema and approval gate validators.
+    - level: 2
+      name: active
+      description: Workflow is used by the orchestrator in at least one environment.
+    - level: 3
+      name: stable
+      description: Workflow has passed 10+ executions without failures.
+    - level: 4
+      name: deprecated
+      description: Workflow is superseded by a newer version.
+    - level: 5
+      name: disabled
+      description: Workflow cannot be executed.
+  workflow_maturity:
+    - id: create-new-repository
+      level: 1
+      rationale: Passes all validators and has been reviewed.
+    - id: create-new-feature
+      level: 1
+      rationale: Passes all validators and has been reviewed.
+    - id: validate-autoskill
+      level: 1
+      rationale: Passes all validators and has been reviewed.
+    - id: generate-paper-section
+      level: 1
+      rationale: Passes all validators and has been reviewed.
+    - id: pre-grand-prix
+      level: 0
+      rationale: Newly defined, awaiting integration testing.
+    - id: run-setup-what-if
+      level: 0
+      rationale: Newly defined, awaiting integration testing.
+    - id: deploy-to-kubernetes
+      level: 0
+      rationale: Newly defined, awaiting integration testing.

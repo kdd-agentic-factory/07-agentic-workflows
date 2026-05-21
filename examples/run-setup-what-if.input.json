@@ -1,0 +1,15 @@
+﻿{
+  "workflow_id": "run-setup-what-if",
+  "inputs": {
+    "session_id": "fp2-jerez-2026",
+    "baseline_setup_id": "setup-jerez-baseline-v1",
+    "setup_change": {
+      "rear_rebound_clicks": 2,
+      "engine_map": "Mapping 2",
+      "apply_from_lap": 10
+    }
+  },
+  "context": {
+    "environment": "development"
+  }
+}

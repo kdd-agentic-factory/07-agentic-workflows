@@ -1,0 +1,60 @@
+﻿id: promote-autoskill
+name: Promote AutoSkill
+version: 0.1.0
+status: proposed
+kdd_stage: documentation
+description: Promotes a validated AutoSkill candidate to an active skill in the registry.
+target_repositories:
+  - 04-skills-autoskills-registry
+inputs:
+  - name: candidate_id
+    type: string
+    required: true
+  - name: validation_report_path
+    type: string
+    required: true
+  - name: approval_record_path
+    type: string
+    required: true
+outputs:
+  - name: skill_id
+    type: string
+  - name: promotion_record_path
+    type: string
+agents:
+  - kdd_admin_agent
+  - documentation_agent
+required_skills:
+  - promote_autoskill
+  - generate_promotion_record
+required_tools:
+  - filesystem.read
+  - filesystem.write
+approval:
+  required: true
+  approver_role: architecture_owner
+  reason: Promotion changes the skills registry and affects all workflows that use skills.
+steps:
+  - id: load_validation_report
+    type: tool
+    tool: filesystem.read
+  - id: request_final_approval
+    type: approval
+    approver_role: architecture_owner
+  - id: promote_skill
+    type: skill
+    skill: promote_autoskill
+  - id: generate_promotion_record
+    type: skill
+    skill: generate_promotion_record
+  - id: write_promotion_record
+    type: tool
+    tool: filesystem.write
+evidence:
+  required: true
+  outputs:
+    - skill_id
+    - promotion_record_path
+metrics:
+  - autoskill_promotion_duration_seconds
+  - autoskill_promotion_rate

@@ -1,0 +1,67 @@
+﻿id: race-strategy
+name: Race Strategy
+version: 0.1.0
+status: proposed
+kdd_stage: interpretation
+description: Generates the race strategy including tire allocation, pit window planning and safety car scenarios.
+target_repositories:
+  - 15-race-command-center
+  - 16-race-ai-copilot
+inputs:
+  - name: circuit_id
+    type: string
+    required: true
+  - name: race_weekend_id
+    type: string
+    required: true
+  - name: weather_forecast
+    type: object
+    required: false
+outputs:
+  - name: race_strategy
+    type: object
+  - name: strategy_report
+    type: string
+agents:
+  - crew_chief_agent
+  - simulation_agent
+  - documentation_agent
+required_skills:
+  - generate_tire_strategy
+  - generate_pit_window_plan
+  - generate_crew_chief_report
+required_tools:
+  - telemetry.query_historical_sessions
+  - simulation.run_scenario
+  - filesystem.write
+approval:
+  required: true
+  approver_role: crew_chief
+  reason: Race strategy requires crew chief approval before being communicated to the driver.
+steps:
+  - id: load_historical_data
+    type: tool
+    tool: telemetry.query_historical_sessions
+  - id: simulate_strategy
+    type: tool
+    tool: simulation.run_scenario
+  - id: generate_tire_strategy
+    type: skill
+    skill: generate_tire_strategy
+  - id: generate_pit_plan
+    type: skill
+    skill: generate_pit_window_plan
+  - id: request_approval
+    type: approval
+    approver_role: crew_chief
+  - id: generate_report
+    type: skill
+    skill: generate_crew_chief_report
+evidence:
+  required: true
+  outputs:
+    - race_strategy
+    - strategy_report
+metrics:
+  - race_strategy_duration_seconds
+  - strategy_simulation_score

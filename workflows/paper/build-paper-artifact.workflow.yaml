@@ -1,0 +1,54 @@
+﻿id: build-paper-artifact
+name: Build Paper Artifact
+version: 0.1.0
+status: proposed
+kdd_stage: documentation
+description: Assembles all paper sections, tables, figures and evidence into a final reproducible paper artefact.
+target_repositories:
+  - 14-paper-reproducibility-kit
+inputs:
+  - name: sections_directory
+    type: string
+    required: true
+  - name: output_path
+    type: string
+    required: true
+outputs:
+  - name: paper_artifact_path
+    type: string
+  - name: build_report
+    type: object
+agents:
+  - documentation_agent
+  - kdd_admin_agent
+required_skills:
+  - assemble_paper
+  - validate_paper_section
+required_tools:
+  - filesystem.read
+  - filesystem.write
+  - documentation.validate_academic_style
+approval:
+  required: false
+  reason: Paper assembly is documentation only.
+steps:
+  - id: load_sections
+    type: tool
+    tool: filesystem.read
+  - id: validate_sections
+    type: skill
+    skill: validate_paper_section
+  - id: assemble_paper
+    type: skill
+    skill: assemble_paper
+  - id: write_artifact
+    type: tool
+    tool: filesystem.write
+evidence:
+  required: true
+  outputs:
+    - paper_artifact_path
+    - build_report
+metrics:
+  - paper_build_duration_seconds
+  - sections_assembled_total

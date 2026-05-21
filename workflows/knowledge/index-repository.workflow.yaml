@@ -1,0 +1,50 @@
+﻿id: index-repository
+name: Index Repository
+version: 0.1.0
+status: proposed
+kdd_stage: selection
+description: Indexes all relevant files from a repository into the RAG knowledge base.
+target_repositories:
+  - 03-rag-cag-knowledge-engine
+inputs:
+  - name: repository_name
+    type: string
+    required: true
+  - name: repository_path
+    type: string
+    required: true
+  - name: collection
+    type: string
+    required: true
+outputs:
+  - name: indexed_files_count
+    type: number
+  - name: index_report
+    type: object
+agents:
+  - kdd_admin_agent
+required_skills:
+  - scan_repository_files
+  - chunk_document
+  - generate_embeddings
+required_tools:
+  - filesystem.read
+  - vector.ingest_document
+approval:
+  required: false
+  reason: Indexing is additive.
+steps:
+  - id: scan_repository
+    type: skill
+    skill: scan_repository_files
+  - id: ingest_files
+    type: tool
+    tool: vector.ingest_document
+evidence:
+  required: true
+  outputs:
+    - indexed_files_count
+    - index_report
+metrics:
+  - repository_indexing_duration_seconds
+  - files_indexed_total

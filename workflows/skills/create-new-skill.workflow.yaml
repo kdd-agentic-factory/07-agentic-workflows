@@ -1,0 +1,56 @@
+﻿id: create-new-skill
+name: Create New Skill
+version: 0.1.0
+status: proposed
+kdd_stage: documentation
+description: Creates a new skill in the Skills Registry following the skill contract specification.
+target_repositories:
+  - 04-skills-autoskills-registry
+inputs:
+  - name: skill_id
+    type: string
+    required: true
+  - name: skill_description
+    type: string
+    required: true
+  - name: skill_inputs
+    type: array
+    required: true
+  - name: skill_outputs
+    type: array
+    required: true
+outputs:
+  - name: skill_path
+    type: string
+  - name: skill_contract_path
+    type: string
+agents:
+  - architect_agent
+  - documentation_agent
+  - reviewer_agent
+required_skills:
+  - generate_skill_contract
+  - generate_skill_tests
+required_tools:
+  - filesystem.write
+  - documentation.validate_markdown
+approval:
+  required: false
+  reason: Skill creation is documentation only until validation.
+steps:
+  - id: generate_skill_contract
+    type: skill
+    skill: generate_skill_contract
+  - id: generate_skill_tests
+    type: skill
+    skill: generate_skill_tests
+  - id: write_skill_files
+    type: tool
+    tool: filesystem.write
+evidence:
+  required: true
+  outputs:
+    - skill_path
+    - skill_contract_path
+metrics:
+  - skill_creation_duration_seconds

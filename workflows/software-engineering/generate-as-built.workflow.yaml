@@ -1,0 +1,48 @@
+﻿id: generate-as-built
+name: Generate As-Built Document
+version: 0.1.0
+status: proposed
+kdd_stage: documentation
+description: Generates an as-built document for a deployed or completed feature.
+target_repositories:
+  - any
+inputs:
+  - name: feature_name
+    type: string
+    required: true
+  - name: target_repository
+    type: string
+    required: true
+  - name: implementation_summary
+    type: string
+    required: true
+outputs:
+  - name: as_built_path
+    type: string
+agents:
+  - documentation_agent
+  - reviewer_agent
+required_skills:
+  - generate_as_built
+required_tools:
+  - filesystem.write
+  - documentation.validate_markdown
+approval:
+  required: false
+  reason: As-built generation is documentation only.
+steps:
+  - id: generate_as_built
+    type: skill
+    skill: generate_as_built
+  - id: validate_document
+    type: tool
+    tool: documentation.validate_markdown
+  - id: write_document
+    type: tool
+    tool: filesystem.write
+evidence:
+  required: true
+  outputs:
+    - as_built_path
+metrics:
+  - as_built_generation_duration_seconds
