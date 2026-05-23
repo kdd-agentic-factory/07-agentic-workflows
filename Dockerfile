@@ -1,9 +1,11 @@
 FROM python:3.12-slim
-
 WORKDIR /app
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
 
-COPY pyproject.toml ./
-RUN pip install --no-cache-dir -e .
+RUN pip install --no-cache-dir \
+    "fastapi>=0.115" "uvicorn[standard]>=0.32" "pydantic>=2.9" "pyyaml>=6.0" \
+    "structlog>=24" "opentelemetry-api>=1.28" "opentelemetry-sdk>=1.28" \
+    "opentelemetry-exporter-otlp>=1.28" "prometheus-client>=0.21"
 
 COPY src/ ./src/
 
