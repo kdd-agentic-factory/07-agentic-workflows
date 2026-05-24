@@ -25,3 +25,10 @@ where = ["src"]
 
 [project.scripts]
 workflow-registry-service = "workflow_registry.main:main"
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "pytest-asyncio>=0.24", "httpx>=0.28", "ruff>=0.7"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]

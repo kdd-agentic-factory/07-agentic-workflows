@@ -10,6 +10,7 @@ from prometheus_client import CONTENT_TYPE_LATEST, Counter, generate_latest
 from fastapi import Depends
 
 from .middleware import RequestContextMiddleware
+from .rate_limit import RateLimitMiddleware
 from .routers import health, version, workflows
 from .security import require_api_key
 
@@ -61,6 +62,7 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+app.add_middleware(RateLimitMiddleware, calls_per_minute=int(os.getenv("RATE_LIMIT_PER_MINUTE", "120")))
 app.add_middleware(RequestContextMiddleware)
 app.add_middleware(
     CORSMiddleware,
