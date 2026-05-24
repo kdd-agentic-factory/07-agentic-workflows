@@ -3,8 +3,9 @@ import logging
 import os
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
+from prometheus_client import CONTENT_TYPE_LATEST, Counter, generate_latest
 
 from .middleware import RequestContextMiddleware
 from .routers import health, version, workflows
@@ -21,6 +22,10 @@ async def lifespan(application: FastAPI):
     yield
     logger.info("Shutting down %s", SERVICE_NAME)
 
+
+_REQUEST_COUNT = Counter(
+    "workflow_registry_http_requests_total", "Total HTTP requests", ["method", "path", "status_code"]
+)
 
 app = FastAPI(
     title="Workflow Registry Service",
@@ -39,6 +44,21 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.middleware("http")
+async def _metrics_middleware(request: Request, call_next):
+    response = await call_next(request)
+    _REQUEST_COUNT.labels(
+        method=request.method, path=request.url.path, status_code=response.status_code
+    ).inc()
+    return response
+
+
+@app.get("/metrics", include_in_schema=False)
+async def _metrics():
+    return Response(content=generate_latest(), media_type=CONTENT_TYPE_LATEST)
+
 
 app.include_router(health.router, tags=["health"])
 app.include_router(version.router, tags=["version"])
