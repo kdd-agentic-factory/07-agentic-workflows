@@ -24,4 +24,7 @@ ENV WORKFLOWS_ROOT=/app
 
 EXPOSE 8070
 
+HEALTHCHECK --interval=30s --timeout=5s --retries=3 \
+  CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8070/health')" || exit 1
+
 CMD ["python", "-m", "workflow_registry.main"]
