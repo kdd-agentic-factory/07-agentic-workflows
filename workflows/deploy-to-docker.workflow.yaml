@@ -1,39 +1,52 @@
 id: deploy-to-docker
 version: 1.0.0
-description: >
-  Define el proceso para empaquetar y validar una aplicacion mediante Docker sin
-  fijar detalles propios de un proyecto concreto.
+name: Deploy to Docker
+status: proposed
+kdd_stage: deployment
+description: 'Define el proceso para empaquetar y validar una aplicacion mediante
+  Docker sin fijar detalles propios de un proyecto concreto.
+
+  '
 inputs:
-  - name: service_name
-    required: true
-    description: Servicio o aplicacion a empaquetar.
-  - name: build_context
-    required: true
-    description: Ruta o repositorio usado como contexto de build.
-  - name: runtime_contract
-    required: true
-    description: Puertos, variables y dependencias de runtime esperadas.
+- name: service_name
+  required: true
+  description: Servicio o aplicacion a empaquetar.
+  type: string
+- name: build_context
+  required: true
+  description: Ruta o repositorio usado como contexto de build.
+  type: string
+- name: runtime_contract
+  required: true
+  description: Puertos, variables y dependencias de runtime esperadas.
+  type: string
 outputs:
-  - docker_build_plan
-  - image_manifest
-  - smoke_test_report
+- name: docker_build_plan
+  type: string
+- name: image_manifest
+  type: string
+- name: smoke_test_report
+  type: string
 guards:
-  - La imagen no contiene secretos.
-  - Las variables de entorno requeridas estan documentadas.
-  - Existe una comprobacion minima de arranque.
+- La imagen no contiene secretos.
+- Las variables de entorno requeridas estan documentadas.
+- Existe una comprobacion minima de arranque.
 steps:
-  - id: inspect-runtime
-    role: devops-agent
-    action: Revisar puertos, dependencias, variables y health checks.
-    produces:
-      - docker_build_plan
-  - id: build-image
-    role: execution-agent
-    action: Construir la imagen usando el repositorio de codigo indicado.
-    produces:
-      - image_manifest
-  - id: smoke-test
-    role: qa-agent
-    action: Ejecutar prueba minima de arranque y conectividad.
-    produces:
-      - smoke_test_report
+- id: inspect-runtime
+  role: devops-agent
+  action: Revisar puertos, dependencias, variables y health checks.
+  produces:
+  - docker_build_plan
+  type: agent
+- id: build-image
+  role: execution-agent
+  action: Construir la imagen usando el repositorio de codigo indicado.
+  produces:
+  - image_manifest
+  type: agent
+- id: smoke-test
+  role: qa-agent
+  action: Ejecutar prueba minima de arranque y conectividad.
+  produces:
+  - smoke_test_report
+  type: agent

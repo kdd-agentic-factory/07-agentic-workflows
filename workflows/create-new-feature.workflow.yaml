@@ -1,46 +1,61 @@
 id: create-new-feature
+name: Create New Feature
 version: 1.0.0
-description: >
-  Define el flujo para introducir una nueva feature desde el contexto de usuario
-  hasta su validacion, manteniendo el proceso desacoplado del codigo.
+status: proposed
+kdd_stage: documentation
+description: 'Define el flujo para introducir una nueva feature desde el contexto
+  de usuario hasta su validacion, manteniendo el proceso desacoplado del codigo.
+
+  '
 inputs:
-  - name: feature_name
-    required: true
-    description: Nombre corto y trazable de la feature.
-  - name: user_need
-    required: true
-    description: Necesidad o resultado esperado por el usuario.
-  - name: target_repository
-    required: true
-    description: Repositorio donde se implementara la logica.
+- name: feature_name
+  required: true
+  description: Nombre corto y trazable de la feature.
+  type: string
+- name: user_need
+  required: true
+  description: Necesidad o resultado esperado por el usuario.
+  type: string
+- name: target_repository
+  required: true
+  description: Repositorio donde se implementara la logica.
+  type: string
 outputs:
-  - feature_brief
-  - implementation_plan
-  - acceptance_criteria
-  - validation_report
+- name: feature_brief
+  type: string
+- name: implementation_plan
+  type: string
+- name: acceptance_criteria
+  type: string
+- name: validation_report
+  type: string
 guards:
-  - La feature tiene alcance verificable.
-  - Los criterios de aceptacion son observables.
-  - El plan identifica los puntos de integracion con codigo externo.
+- La feature tiene alcance verificable.
+- Los criterios de aceptacion son observables.
+- El plan identifica los puntos de integracion con codigo externo.
 steps:
-  - id: frame-feature
-    role: product-agent
-    action: Convertir la necesidad en alcance, restricciones y criterios.
-    produces:
-      - feature_brief
-      - acceptance_criteria
-  - id: map-architecture
-    role: architecture-agent
-    action: Identificar modulos afectados, interfaces y riesgos.
-    produces:
-      - implementation_plan
-  - id: coordinate-implementation
-    role: implementation-agent
-    action: Delegar la implementacion al repositorio de codigo correspondiente.
-    produces:
-      - implementation_handoff
-  - id: validate-feature
-    role: qa-agent
-    action: Revisar criterios, pruebas y evidencia generada.
-    produces:
-      - validation_report
+- id: frame-feature
+  role: product-agent
+  action: Convertir la necesidad en alcance, restricciones y criterios.
+  produces:
+  - feature_brief
+  - acceptance_criteria
+  type: agent
+- id: map-architecture
+  role: architecture-agent
+  action: Identificar modulos afectados, interfaces y riesgos.
+  produces:
+  - implementation_plan
+  type: agent
+- id: coordinate-implementation
+  role: implementation-agent
+  action: Delegar la implementacion al repositorio de codigo correspondiente.
+  produces:
+  - implementation_handoff
+  type: agent
+- id: validate-feature
+  role: qa-agent
+  action: Revisar criterios, pruebas y evidencia generada.
+  produces:
+  - validation_report
+  type: agent

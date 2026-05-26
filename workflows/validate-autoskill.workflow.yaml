@@ -1,41 +1,54 @@
 id: validate-autoskill
 version: 1.0.0
-description: >
-  Valida que una autoskill propuesta sea segura, reusable y suficientemente
+name: Validate Autoskill
+status: proposed
+kdd_stage: documentation
+description: 'Valida que una autoskill propuesta sea segura, reusable y suficientemente
   especifica antes de incorporarla al catalogo.
+
+  '
 inputs:
-  - name: skill_path
-    required: true
-    description: Ruta a la skill candidata.
-  - name: expected_capability
-    required: true
-    description: Capacidad que debe cubrir.
+- name: skill_path
+  required: true
+  description: Ruta a la skill candidata.
+  type: string
+- name: expected_capability
+  required: true
+  description: Capacidad que debe cubrir.
+  type: string
 outputs:
-  - validation_report
-  - risk_assessment
-  - approval_decision
+- name: validation_report
+  type: string
+- name: risk_assessment
+  type: string
+- name: approval_decision
+  type: string
 guards:
-  - La skill no solicita secretos innecesarios.
-  - Los ejemplos no dependen de datos privados.
-  - Las herramientas requeridas estan justificadas.
+- La skill no solicita secretos innecesarios.
+- Los ejemplos no dependen de datos privados.
+- Las herramientas requeridas estan justificadas.
 steps:
-  - id: inspect-contract
-    role: qa-agent
-    action: Revisar nombre, descripcion, disparadores y limites.
-    produces:
-      - contract_findings
-  - id: evaluate-safety
-    role: safety-agent
-    action: Identificar riesgos de permisos, privacidad y acciones destructivas.
-    produces:
-      - risk_assessment
-  - id: run-sample-task
-    role: evaluation-agent
-    action: Ejecutar mentalmente o con fixtures un caso representativo.
-    produces:
-      - behavior_notes
-  - id: decide
-    role: maintainer-agent
-    action: Aprobar, pedir cambios o rechazar la skill.
-    produces:
-      - approval_decision
+- id: inspect-contract
+  role: qa-agent
+  action: Revisar nombre, descripcion, disparadores y limites.
+  produces:
+  - contract_findings
+  type: agent
+- id: evaluate-safety
+  role: safety-agent
+  action: Identificar riesgos de permisos, privacidad y acciones destructivas.
+  produces:
+  - risk_assessment
+  type: agent
+- id: run-sample-task
+  role: evaluation-agent
+  action: Ejecutar mentalmente o con fixtures un caso representativo.
+  produces:
+  - behavior_notes
+  type: agent
+- id: decide
+  role: maintainer-agent
+  action: Aprobar, pedir cambios o rechazar la skill.
+  produces:
+  - approval_decision
+  type: agent

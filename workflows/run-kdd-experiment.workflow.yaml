@@ -1,46 +1,61 @@
 id: run-kdd-experiment
 version: 1.0.0
-description: >
-  Orquesta un experimento KDD desde la pregunta experimental hasta la evidencia
-  reproducible y el informe de resultados.
+name: Run KDD Experiment
+status: proposed
+kdd_stage: data_mining
+description: 'Orquesta un experimento KDD desde la pregunta experimental hasta la
+  evidencia reproducible y el informe de resultados.
+
+  '
 inputs:
-  - name: experiment_name
-    required: true
-    description: Identificador del experimento.
-  - name: hypothesis
-    required: true
-    description: Hipotesis o comparacion que se evaluara.
-  - name: dataset_contract
-    required: true
-    description: Descripcion del dataset, permisos y particiones.
+- name: experiment_name
+  required: true
+  description: Identificador del experimento.
+  type: string
+- name: hypothesis
+  required: true
+  description: Hipotesis o comparacion que se evaluara.
+  type: string
+- name: dataset_contract
+  required: true
+  description: Descripcion del dataset, permisos y particiones.
+  type: string
 outputs:
+- name: experiment_plan
+  type: string
+- name: run_manifest
+  type: string
+- name: metrics_report
+  type: string
+- name: reproducibility_notes
+  type: string
+guards:
+- El dataset tiene permisos y version documentados.
+- Las metricas estan definidas antes de ejecutar.
+- Los resultados conservan semillas, parametros y entorno.
+steps:
+- id: design-experiment
+  role: research-agent
+  action: Definir hipotesis, baseline, metricas y particiones.
+  produces:
   - experiment_plan
+  type: agent
+- id: prepare-run
+  role: mlops-agent
+  action: Preparar manifiesto de ejecucion y dependencias externas.
+  produces:
   - run_manifest
+  type: agent
+- id: execute-experiment
+  role: execution-agent
+  action: Lanzar la ejecucion en el repositorio o plataforma correspondiente.
+  produces:
+  - raw_results
+  type: agent
+- id: analyze-results
+  role: analysis-agent
+  action: Consolidar metricas, incidencias y notas de reproducibilidad.
+  produces:
   - metrics_report
   - reproducibility_notes
-guards:
-  - El dataset tiene permisos y version documentados.
-  - Las metricas estan definidas antes de ejecutar.
-  - Los resultados conservan semillas, parametros y entorno.
-steps:
-  - id: design-experiment
-    role: research-agent
-    action: Definir hipotesis, baseline, metricas y particiones.
-    produces:
-      - experiment_plan
-  - id: prepare-run
-    role: mlops-agent
-    action: Preparar manifiesto de ejecucion y dependencias externas.
-    produces:
-      - run_manifest
-  - id: execute-experiment
-    role: execution-agent
-    action: Lanzar la ejecucion en el repositorio o plataforma correspondiente.
-    produces:
-      - raw_results
-  - id: analyze-results
-    role: analysis-agent
-    action: Consolidar metricas, incidencias y notas de reproducibilidad.
-    produces:
-      - metrics_report
-      - reproducibility_notes
+  type: agent

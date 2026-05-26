@@ -1,45 +1,60 @@
 id: create-new-repository
 version: 1.0.0
-description: >
-  Orquesta la creacion de un nuevo repositorio manteniendo separados el contrato
-  de proceso, la estructura inicial y las decisiones tecnicas.
+name: Create New Repository
+status: proposed
+kdd_stage: documentation
+description: 'Orquesta la creacion de un nuevo repositorio manteniendo separados el
+  contrato de proceso, la estructura inicial y las decisiones tecnicas.
+
+  '
 inputs:
-  - name: repository_name
-    required: true
-    description: Nombre estable del repositorio.
-  - name: purpose
-    required: true
-    description: Problema o capacidad que cubre el repositorio.
-  - name: template
-    required: false
-    description: Plantilla base o repositorio de referencia.
+- name: repository_name
+  required: true
+  description: Nombre estable del repositorio.
+  type: string
+- name: purpose
+  required: true
+  description: Problema o capacidad que cubre el repositorio.
+  type: string
+- name: template
+  required: false
+  description: Plantilla base o repositorio de referencia.
+  type: string
 outputs:
-  - repository_scaffold
-  - readme
-  - agents_guide
-  - initial_validation_report
+- name: repository_scaffold
+  type: string
+- name: readme
+  type: string
+- name: agents_guide
+  type: string
+- name: initial_validation_report
+  type: string
 guards:
-  - El nombre del repositorio sigue la convencion del workspace.
-  - No se copian secretos ni configuracion local.
-  - La estructura inicial diferencia documentacion, codigo, tests y ejemplos.
+- El nombre del repositorio sigue la convencion del workspace.
+- No se copian secretos ni configuracion local.
+- La estructura inicial diferencia documentacion, codigo, tests y ejemplos.
 steps:
-  - id: clarify-purpose
-    role: product-agent
-    action: Definir objetivo, usuarios y limites del repositorio.
-    produces:
-      - repository_brief
-  - id: select-template
-    role: architecture-agent
-    action: Elegir plantilla compatible con el tipo de proyecto.
-    produces:
-      - scaffold_plan
-  - id: create-structure
-    role: implementation-agent
-    action: Crear directorios, documentos base y archivos de control.
-    produces:
-      - repository_scaffold
-  - id: validate-baseline
-    role: qa-agent
-    action: Verificar estructura, nomenclatura y ausencia de secretos.
-    produces:
-      - initial_validation_report
+- id: clarify-purpose
+  role: product-agent
+  action: Definir objetivo, usuarios y limites del repositorio.
+  produces:
+  - repository_brief
+  type: agent
+- id: select-template
+  role: architecture-agent
+  action: Elegir plantilla compatible con el tipo de proyecto.
+  produces:
+  - scaffold_plan
+  type: agent
+- id: create-structure
+  role: implementation-agent
+  action: Crear directorios, documentos base y archivos de control.
+  produces:
+  - repository_scaffold
+  type: agent
+- id: validate-baseline
+  role: qa-agent
+  action: Verificar estructura, nomenclatura y ausencia de secretos.
+  produces:
+  - initial_validation_report
+  type: agent

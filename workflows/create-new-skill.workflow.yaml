@@ -1,41 +1,55 @@
 id: create-new-skill
 version: 1.0.0
-description: >
-  Orquesta la creacion de una skill reutilizable con instrucciones, alcance,
+name: Create New Skill
+status: proposed
+kdd_stage: documentation
+description: 'Orquesta la creacion de una skill reutilizable con instrucciones, alcance,
   ejemplos y validaciones minimas.
+
+  '
 inputs:
-  - name: skill_name
-    required: true
-    description: Nombre unico de la skill.
-  - name: capability
-    required: true
-    description: Capacidad especializada que aporta.
-  - name: trigger_conditions
-    required: true
-    description: Situaciones en las que debe usarse.
+- name: skill_name
+  required: true
+  description: Nombre unico de la skill.
+  type: string
+- name: capability
+  required: true
+  description: Capacidad especializada que aporta.
+  type: string
+- name: trigger_conditions
+  required: true
+  description: Situaciones en las que debe usarse.
+  type: string
 outputs:
+- name: skill_contract
+  type: string
+- name: skill_files
+  type: string
+- name: examples
+  type: string
+- name: validation_report
+  type: string
+guards:
+- La skill tiene disparadores claros.
+- La skill no duplica capacidades existentes.
+- Las instrucciones distinguen proceso, herramientas y limites.
+steps:
+- id: define-scope
+  role: skill-designer
+  action: Delimitar capacidad, entradas, salidas y casos de no uso.
+  produces:
   - skill_contract
+  type: agent
+- id: author-instructions
+  role: documentation-agent
+  action: Redactar instrucciones operativas y ejemplos.
+  produces:
   - skill_files
   - examples
+  type: agent
+- id: check-integration
+  role: qa-agent
+  action: Validar formato, disparadores y ausencia de acoplamientos indebidos.
+  produces:
   - validation_report
-guards:
-  - La skill tiene disparadores claros.
-  - La skill no duplica capacidades existentes.
-  - Las instrucciones distinguen proceso, herramientas y limites.
-steps:
-  - id: define-scope
-    role: skill-designer
-    action: Delimitar capacidad, entradas, salidas y casos de no uso.
-    produces:
-      - skill_contract
-  - id: author-instructions
-    role: documentation-agent
-    action: Redactar instrucciones operativas y ejemplos.
-    produces:
-      - skill_files
-      - examples
-  - id: check-integration
-    role: qa-agent
-    action: Validar formato, disparadores y ausencia de acoplamientos indebidos.
-    produces:
-      - validation_report
+  type: agent

@@ -1,45 +1,60 @@
 id: generate-paper-section
 version: 1.0.0
-description: >
-  Coordina la generacion de una seccion academica alineada con una pregunta de
-  investigacion, evidencias disponibles y estilo del paper.
+name: Generate Paper Section
+status: proposed
+kdd_stage: documentation
+description: 'Coordina la generacion de una seccion academica alineada con una pregunta
+  de investigacion, evidencias disponibles y estilo del paper.
+
+  '
 inputs:
-  - name: section_name
-    required: true
-    description: Seccion objetivo del paper.
-  - name: research_question
-    required: true
-    description: Pregunta o hipotesis que debe sostener la seccion.
-  - name: evidence_pack
-    required: true
-    description: Fuentes, resultados o notas aprobadas para usar.
+- name: section_name
+  required: true
+  description: Seccion objetivo del paper.
+  type: string
+- name: research_question
+  required: true
+  description: Pregunta o hipotesis que debe sostener la seccion.
+  type: string
+- name: evidence_pack
+  required: true
+  description: Fuentes, resultados o notas aprobadas para usar.
+  type: string
 outputs:
-  - section_outline
-  - drafted_section
-  - citation_needs
-  - review_notes
+- name: section_outline
+  type: string
+- name: drafted_section
+  type: string
+- name: citation_needs
+  type: string
+- name: review_notes
+  type: string
 guards:
-  - Toda afirmacion tecnica debe estar vinculada a evidencia.
-  - Las citas pendientes quedan marcadas explicitamente.
-  - El texto mantiene el tono y estructura del documento principal.
+- Toda afirmacion tecnica debe estar vinculada a evidencia.
+- Las citas pendientes quedan marcadas explicitamente.
+- El texto mantiene el tono y estructura del documento principal.
 steps:
-  - id: map-argument
-    role: research-agent
-    action: Identificar tesis, evidencias y orden argumental.
-    produces:
-      - section_outline
-  - id: draft-section
-    role: writing-agent
-    action: Redactar la seccion con trazabilidad a evidencias.
-    produces:
-      - drafted_section
-  - id: citation-pass
-    role: bibliography-agent
-    action: Marcar citas existentes y necesidades bibliograficas.
-    produces:
-      - citation_needs
-  - id: review-section
-    role: reviewer-agent
-    action: Revisar coherencia, claims, tono y huecos.
-    produces:
-      - review_notes
+- id: map-argument
+  role: research-agent
+  action: Identificar tesis, evidencias y orden argumental.
+  produces:
+  - section_outline
+  type: agent
+- id: draft-section
+  role: writing-agent
+  action: Redactar la seccion con trazabilidad a evidencias.
+  produces:
+  - drafted_section
+  type: agent
+- id: citation-pass
+  role: bibliography-agent
+  action: Marcar citas existentes y necesidades bibliograficas.
+  produces:
+  - citation_needs
+  type: agent
+- id: review-section
+  role: reviewer-agent
+  action: Revisar coherencia, claims, tono y huecos.
+  produces:
+  - review_notes
+  type: agent
