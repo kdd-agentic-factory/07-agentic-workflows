@@ -5,7 +5,13 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
-from prometheus_client import CONTENT_TYPE_LATEST, Counter, generate_latest
+from prometheus_client import CONTENT_TYPE_LATEST, Counter, generate_latest, REGISTRY
+
+def _counter(name, doc, labels):
+    try:
+        return Counter(name, doc, labels)
+    except ValueError:
+        return REGISTRY._names_to_collectors.get(name + "_total") or REGISTRY._names_to_collectors[name]
 
 from fastapi import Depends
 
@@ -48,7 +54,7 @@ async def lifespan(application: FastAPI):
     logger.info("Shutting down %s", SERVICE_NAME)
 
 
-_REQUEST_COUNT = Counter(
+_REQUEST_COUNT = _counter(
     "workflow_registry_http_requests_total", "Total HTTP requests", ["method", "path", "status_code"]
 )
 
