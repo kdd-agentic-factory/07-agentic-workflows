@@ -46,7 +46,7 @@ def test_metrics_endpoint(client):
 # ---------------------------------------------------------------------------
 
 def test_list_workflows(client):
-    resp = client.get("/workflows")
+    resp = client.get("/api/v1/workflows")
     assert resp.status_code == 200
     data = resp.json()
     assert isinstance(data, list)
@@ -54,7 +54,7 @@ def test_list_workflows(client):
 
 
 def test_list_workflows_schema(client):
-    resp = client.get("/workflows")
+    resp = client.get("/api/v1/workflows")
     wf = resp.json()[0]
     assert "workflow_id" in wf
     assert "name" in wf
@@ -64,13 +64,13 @@ def test_list_workflows_schema(client):
 
 
 def test_list_workflows_contains_governance(client):
-    resp = client.get("/workflows")
+    resp = client.get("/api/v1/workflows")
     ids = [w["workflow_id"] for w in resp.json()]
     assert "create-new-repository" in ids
 
 
 def test_list_workflows_contains_race_engineering(client):
-    resp = client.get("/workflows")
+    resp = client.get("/api/v1/workflows")
     ids = [w["workflow_id"] for w in resp.json()]
     assert any("grand-prix" in wid or "race" in wid for wid in ids)
 
@@ -80,7 +80,7 @@ def test_list_workflows_contains_race_engineering(client):
 # ---------------------------------------------------------------------------
 
 def test_get_workflow_found(client):
-    resp = client.get("/workflows/create-new-repository")
+    resp = client.get("/api/v1/workflows/create-new-repository")
     assert resp.status_code == 200
     data = resp.json()
     assert data["workflow_id"] == "create-new-repository"
@@ -89,12 +89,12 @@ def test_get_workflow_found(client):
 
 
 def test_get_workflow_not_found(client):
-    resp = client.get("/workflows/nonexistent-workflow-xyz")
+    resp = client.get("/api/v1/workflows/nonexistent-workflow-xyz")
     assert resp.status_code == 404
 
 
 def test_get_workflow_has_full_fields(client):
-    resp = client.get("/workflows/create-new-repository")
+    resp = client.get("/api/v1/workflows/create-new-repository")
     data = resp.json()
     assert "approval_gates" in data
     assert "artifacts" in data
@@ -108,7 +108,7 @@ def test_get_workflow_has_full_fields(client):
 # ---------------------------------------------------------------------------
 
 def test_get_workflow_schema(client):
-    resp = client.get("/workflows/create-new-repository/schema")
+    resp = client.get("/api/v1/workflows/create-new-repository/schema")
     assert resp.status_code == 200
     data = resp.json()
     assert data["workflow_id"] == "create-new-repository"
@@ -119,7 +119,7 @@ def test_get_workflow_schema(client):
 
 
 def test_get_workflow_schema_not_found(client):
-    resp = client.get("/workflows/no-such-workflow/schema")
+    resp = client.get("/api/v1/workflows/no-such-workflow/schema")
     assert resp.status_code == 404
 
 
@@ -128,7 +128,7 @@ def test_get_workflow_schema_not_found(client):
 # ---------------------------------------------------------------------------
 
 def test_validate_workflow_valid(client):
-    resp = client.post("/workflows/validate", json={
+    resp = client.post("/api/v1/workflows/validate", json={
         "workflow_id": "my-test-wf",
         "steps": [{"step": "do_thing"}],
         "kdd_stages": ["mining"],
@@ -141,7 +141,7 @@ def test_validate_workflow_valid(client):
 
 
 def test_validate_workflow_missing_steps(client):
-    resp = client.post("/workflows/validate", json={
+    resp = client.post("/api/v1/workflows/validate", json={
         "workflow_id": "bad-wf",
         "kdd_stages": ["mining"],
     })
@@ -152,7 +152,7 @@ def test_validate_workflow_missing_steps(client):
 
 
 def test_validate_workflow_missing_kdd_stages_warns(client):
-    resp = client.post("/workflows/validate", json={
+    resp = client.post("/api/v1/workflows/validate", json={
         "workflow_id": "partial-wf",
         "steps": [{"step": "do_thing"}],
         "approval_gates": [],
@@ -169,7 +169,7 @@ def test_validate_workflow_missing_kdd_stages_warns(client):
 
 def test_render_workflow(client):
     resp = client.post(
-        "/workflows/render",
+        "/api/v1/workflows/render",
         params={"workflow_id": "create-new-repository"},
         json={"rider": "MM93", "circuit": "jerez"},
     )
@@ -182,7 +182,7 @@ def test_render_workflow(client):
 
 def test_render_workflow_not_found(client):
     resp = client.post(
-        "/workflows/render",
+        "/api/v1/workflows/render",
         params={"workflow_id": "no-such-workflow"},
         json={},
     )
