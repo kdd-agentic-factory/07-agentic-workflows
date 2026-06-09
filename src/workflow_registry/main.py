@@ -5,6 +5,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from prometheus_client import CONTENT_TYPE_LATEST, Counter, generate_latest, REGISTRY
 
 def _counter(name, doc, labels):
@@ -78,6 +79,36 @@ app.add_middleware(
     allow_headers=["*"],
     allow_credentials=False,
 )
+
+
+# ── Global exception handlers ──────────────────────────────────────
+import logging
+_logger = logging.getLogger("workflow-registry")
+
+@app.exception_handler(422)
+async def _validation_handler(request, exc):
+    return JSONResponse(
+        status_code=422,
+        content={
+            "error": "validation_error",
+            "detail": str(exc.errors()) if hasattr(exc, "errors") else str(exc),
+        },
+    )
+
+@app.exception_handler(404)
+async def _not_found_handler(request, exc):
+    return JSONResponse(
+        status_code=404,
+        content={"error": "not_found", "detail": "The requested resource was not found."},
+    )
+
+@app.exception_handler(Exception)
+async def _generic_handler(request, exc):
+    _logger.exception("unhandled_exception", exc_info=exc)
+    return JSONResponse(
+        status_code=500,
+        content={"error": "internal_error", "detail": "An internal error occurred."},
+    )
 
 
 @app.middleware("http")
