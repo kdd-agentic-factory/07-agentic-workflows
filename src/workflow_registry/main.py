@@ -69,7 +69,7 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-app.add_middleware(RateLimitMiddleware, calls_per_minute=int(os.getenv("RATE_LIMIT_PER_MINUTE", "120")))
+app.add_middleware(RateLimitMiddleware, calls_per_minute=int(os.getenv("RATE_LIMIT_PER_MINUTE", "60")))
 app.add_middleware(RequestContextMiddleware)
 _cors_origins = [o for o in os.getenv("CORS_ORIGINS", "").split(",") if o]
 app.add_middleware(
