@@ -13,3 +13,8 @@ venv/
 *.egg-info/
 dist/
 build/
+.claude/
+docs/
+examples/
+validators/
+.github/
