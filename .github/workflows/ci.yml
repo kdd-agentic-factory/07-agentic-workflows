@@ -20,7 +20,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Install
-        run: pip install -e . pytest pytest-asyncio httpx
+        run: pip install -e . pytest pytest-asyncio httpx jsonschema
       - name: Pytest
         run: python -m pytest -q
 
