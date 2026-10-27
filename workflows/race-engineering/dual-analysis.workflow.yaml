@@ -1,0 +1,91 @@
+id: dual-analysis
+workflow_id: dual-analysis
+name: Session Crew Chief Dual Analysis
+version: 1.0.0
+status: proposed
+kdd_stage: interpretation
+kdd_stages: [selection, preprocessing, transformation, data_mining, interpretation]
+description: >-
+  Coordinates immutable session evidence, specialist analysis and procedurally
+  independent reviews. Missing tools/models are unavailable; missing inputs block.
+  Durable execution and sealed confrontation require the supervised runtime.
+target_repositories: [01-agent-orchestrator, 02-mcp-gateway, 18-telemetry-dataset, 17-digital-twin-simulation-lab]
+inputs:
+  - {name: workflow_id, type: string, required: true}
+  - {name: analysis_snapshot, type: object, required: true}
+  - {name: scoped_task_contracts, type: array, required: true}
+  - {name: run_budget, type: object, required: true}
+outputs:
+  - {name: specialist_results, type: array}
+  - {name: reviewer_results, type: array}
+  - {name: branch_seals, type: object}
+  - {name: confrontation, type: object}
+  - {name: action_history, type: array}
+agents: [crew_chief_agent, reviewer_agent, kdd_admin_agent]
+specialists: [chassis, track, weather, physical, neuro, tires-powertrain]
+reviewers: [mechanical-check, evidence-quality, alternative-hypotheses]
+required_skills: []
+required_tools: [engineering.read_snapshot, engineering.read_evidence, engineering.read_result, engineering.local_model_json]
+capability_policy:
+  registry_and_rag: block_required_tasks_when_missing
+  physical_and_neuro: unavailable_without_explicit_validated_inputs_and_capability
+  deterministic_chassis: consume_frozen_17_18_results_only
+  experimental_2d: block_even_when_models_agree
+  same_model_review: process_independent_same_model
+  external_validation: false
+budget:
+  active_runs_per_session: 1
+  installation_model_concurrency: 2
+  model_calls_per_run: 12
+  domain_reads_per_reviewer: 2
+  call_timeout_seconds: 60
+  run_timeout_seconds: 600
+  lease_seconds: 60
+  renew_seconds: 15
+  enforcement: durable_runtime_required
+approval:
+  required: true
+  approver_role: crew_chief
+  reason: Any critical engineering decision requires human approval after sealed evidence review.
+steps:
+  - id: select_snapshot
+    type: tool
+    tool: engineering.read_snapshot
+    kdd_stage: selection
+  - id: validate_frozen_inputs
+    type: agent
+    agent: kdd_admin_agent
+    action: block_incomplete_or_experimental_inputs
+    kdd_stage: preprocessing
+  - id: project_bounded_evidence
+    type: tool
+    tool: engineering.read_evidence
+    kdd_stage: transformation
+  - id: execute_specialists
+    type: agent
+    agent: crew_chief_agent
+    action: execute_versioned_specialist_tasks
+    kdd_stage: data_mining
+  - id: execute_reviewers
+    type: agent
+    agent: reviewer_agent
+    action: independent_prompts_and_scoped_reads_without_principal_access
+    kdd_stage: data_mining
+  - id: seal_branches
+    type: agent
+    agent: kdd_admin_agent
+    action: persist_immutable_principal_and_review_seals
+    produces: [principal_sealed, review_sealed]
+  - id: confront_sealed_results
+    type: agent
+    agent: crew_chief_agent
+    action: confront_only_sealed_branches_under_distinct_trusted_capability
+    requires: [principal_sealed, review_sealed]
+    kdd_stage: interpretation
+  - id: human_decision
+    type: approval
+    approver_role: crew_chief
+evidence:
+  required: true
+  outputs: [specialist_results, reviewer_results, branch_seals, confrontation, action_history]
+metrics: [engineering_model_calls_total, engineering_domain_reads_total, engineering_task_duration_seconds]

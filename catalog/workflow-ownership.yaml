@@ -1,4 +1,8 @@
 ﻿ownership:
+  workflows:
+    - id: dual-analysis
+      owner: race-engineering
+      approver_role: crew_chief
   teams:
     - id: architecture
       description: Platform architecture team

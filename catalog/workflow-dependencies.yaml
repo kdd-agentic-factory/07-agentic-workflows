@@ -1,4 +1,15 @@
 ﻿dependencies:
+  - workflow_id: dual-analysis
+    depends_on_workflows: []
+    depends_on_repositories:
+      - 01-agent-orchestrator
+      - 02-mcp-gateway
+      - 03-rag-cag-knowledge-layer
+      - 04-skills-autoskills-registry
+      - 17-digital-twin-simulation-lab
+      - 18-telemetry-dataset
+    required_registered_tools: [engineering.read_snapshot, engineering.read_evidence, engineering.read_result, engineering.local_model_json]
+    missing_required_capability: blocked_missing_inputs
   - workflow_id: create-new-feature
     depends_on_workflows: []
     depends_on_repositories:

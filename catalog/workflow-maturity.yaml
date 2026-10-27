@@ -19,6 +19,9 @@
       name: disabled
       description: Workflow cannot be executed.
   workflow_maturity:
+    - id: dual-analysis
+      level: 0
+      rationale: Contracts and controlled transports tested; durable runtime, real inference and sealed confrontation pending.
     - id: create-new-repository
       level: 1
       rationale: Passes all validators and has been reviewed.

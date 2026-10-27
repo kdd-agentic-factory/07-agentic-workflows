@@ -1,4 +1,9 @@
 ﻿workflows:
+  - id: dual-analysis
+    path: workflows/race-engineering/dual-analysis.workflow.yaml
+    category: race-engineering
+    status: proposed
+    owner: race-engineering
   - id: create-new-repository
     path: workflows/governance/create-new-repository.workflow.yaml
     category: governance
